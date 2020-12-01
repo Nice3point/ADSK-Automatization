@@ -1,0 +1,10 @@
+﻿<RevitAddIns>
+    <AddIn Type="Application">
+        <Name>ApplicationPlugin</Name>
+        <Assembly>ADSK-Automatization.dll</Assembly>
+        <AddInId>3228618D-D325-4707-979F-7FC06DF4DFAF</AddInId>
+        <FullClassName>ADSK-Automatization.Appication</FullClassName>
+        <VendorId>Nice3point</VendorId>
+        <VendorDescription>Roman Karpovich</VendorDescription>
+    </AddIn>
+</RevitAddIns>
