@@ -156,26 +156,26 @@ namespace Nice3point.Revit.ADSK.MEP
             foreach (var curElement in elements)
             {
                 var len = curElement.get_Parameter(BuiltInParameter.CURVE_ELEM_LENGTH).AsDouble();
+                var quantityParam = curElement.get_Parameter(AdskGuid.AdskQuantity);
                 len = UnitUtils.ConvertFromInternalUnits(len, UnitTypeId.Meters) * GetPercentGlobal(doc);
                 if (curElement is FlexPipe fp)
                 {
                     if (doc.GetElement(fp.GetTypeId()) is FlexPipeType fpt &&
                         Math.Abs(fpt.LookupParameter("Тип трубопровода").AsDouble() - 3) < 0.1)
-                        curElement.get_Parameter(AdskGuid.AdskQuantity)
-                            .Set(1.0); // Заполнение параметра ADSK_Количество для гибкой трубы - Гибкая подводка.
+                        quantityParam?.Set(1.0); // Заполнение параметра ADSK_Количество для гибкой трубы - Гибкая подводка.
                     else
-                        curElement.get_Parameter(AdskGuid.AdskQuantity)
-                            .Set(len); // Заполнение параметра ADSK_Количество для любых других гибких труб.
+                        quantityParam?.Set(len); // Заполнение параметра ADSK_Количество для любых других гибких труб.
                 }
                 else
                 {
-                    curElement.get_Parameter(AdskGuid.AdskQuantity)
-                        .Set(len); // Заполнение параметра ADSK_Количество для линейных элементов, трубы и воздуховоды
+                    quantityParam?.Set(len); // Заполнение параметра ADSK_Количество для линейных элементов, трубы и воздуховоды
                 }
 
                 if (copyComm)
-                    curElement.get_Parameter(AdskGuid.AdskNote)
-                        .Set(commentValue); // Заполнение параметра ADSK_Примечание, площадь для воздуховодов
+                {
+                    var noteParam = curElement.get_Parameter(AdskGuid.AdskNote);
+                    noteParam?.Set(commentValue); // Заполнение параметра ADSK_Примечание, площадь для воздуховодов
+                }
             }
 
             tr.Commit();
@@ -215,16 +215,10 @@ namespace Nice3point.Revit.ADSK.MEP
             using var tr = new Transaction(doc, "Заполнение значений ADSK_Масса элемента");
             tr.Start();
             foreach (var curElement in elements)
-                try
-                {
-                    curElement.get_Parameter(AdskGuid.AdskMassDimension)
-                        .Set(double.Parse(doubleValueData)); // Заполнение параметра ADSK_Масса элемента
-                }
-                catch (Exception)
-                {
-                    // ignored
-                }
-
+            {
+                var massParam = curElement.get_Parameter(AdskGuid.AdskMassDimension);
+                    massParam?.Set(double.Parse(doubleValueData)); // Заполнение параметра ADSK_Масса элемента
+            }
             tr.Commit();
         }
 
@@ -239,8 +233,8 @@ namespace Nice3point.Revit.ADSK.MEP
                 var systemType = doc.GetElement(pipe.MEPSystem.GetTypeId()) as PipingSystemType;
                 if (systemType == null) continue;
                 var temperature = systemType.FluidTemperature;
-                curElement.LookupParameter("Температура трубопровода")
-                    .Set(UnitUtils.ConvertFromInternalUnits(temperature, UnitTypeId.Kelvin));
+                var temperatureParam = curElement.LookupParameter("Температура трубопровода");
+                temperatureParam?.Set(UnitUtils.ConvertFromInternalUnits(temperature, UnitTypeId.Kelvin));
             }
 
             tr.Commit();
