@@ -65,9 +65,18 @@
         <Content Include="Nice3point.Revit.ADSK.MEP.addin">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <Resource Include="Resources\CreateSpaces16.png" />
-        <Resource Include="Resources\CopyADSK32.png" />
+        <Resource Include="Resources\AutoNumerate16.png" />
+        <Resource Include="Resources\AutoNumerate32.png" />
+        <Resource Include="Resources\CheckADSK16.png" />
+        <Resource Include="Resources\CheckADSK32.png" />
         <Resource Include="Resources\CopyADSK16.png" />
+        <Resource Include="Resources\CopyADSK32.png" />
+        <Resource Include="Resources\CreateDuctSystemViews16.png" />
+        <Resource Include="Resources\CreateDuctSystemViews32.png" />
+        <Resource Include="Resources\CreatePipeSystemViews16.png" />
+        <Resource Include="Resources\CreatePipeSystemViews32.png" />
+        <Resource Include="Resources\CreateSpaces16.png" />
+        <Resource Include="Resources\CreateSpaces32.png" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <ItemGroup>

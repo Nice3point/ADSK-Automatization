@@ -349,7 +349,7 @@ namespace Nice3point.Revit.ADSK.MEP
                 Title = "Размещение инженерных пространств",
                 TitleAutoPrefix = false,
                 AllowCancellation = true,
-                MainInstruction = "Втекущем проекте нет размещенных инженерных пространств",
+                MainInstruction = "В текущем проекте нет размещенных инженерных пространств",
                 MainContent = "Проанализировать связанный файл на наличие помещений"
             };
             // Message related stuffs

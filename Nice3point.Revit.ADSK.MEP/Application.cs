@@ -16,9 +16,9 @@ namespace Nice3point.Revit.ADSK.MEP
             {
                 buttonAutoNumerate.ToolTip = "Автонумерация спецификаций в общий параметр ADSK_Позиция";
                 buttonAutoNumerate.Image = new BitmapImage(new Uri(
-                    "pack://application:,,,/Nice3point.Revit.ADSK.MEP;component/Resources/CopyADSK16.png"));
+                    "pack://application:,,,/Nice3point.Revit.ADSK.MEP;component/Resources/AutoNumerate16.png"));
                 buttonAutoNumerate.LargeImage = new BitmapImage(new Uri(
-                    "pack://application:,,,/Nice3point.Revit.ADSK.MEP;component/Resources/CopyADSK32.png"));
+                    "pack://application:,,,/Nice3point.Revit.ADSK.MEP;component/Resources/AutoNumerate32.png"));
             }
 
             if (panel.AddItem(new PushButtonData("CheckADSK", "Проверить\nсемейства",
@@ -27,9 +27,9 @@ namespace Nice3point.Revit.ADSK.MEP
                 buttonCheckAdsk.ToolTip =
                     "Проверка файлов семейств на соответствие требованиям по общим параметрам ADSK";
                 buttonCheckAdsk.Image = new BitmapImage(new Uri(
-                    "pack://application:,,,/Nice3point.Revit.ADSK.MEP;component/Resources/CopyADSK16.png"));
+                    "pack://application:,,,/Nice3point.Revit.ADSK.MEP;component/Resources/CheckADSK16.png"));
                 buttonCheckAdsk.LargeImage = new BitmapImage(new Uri(
-                    "pack://application:,,,/Nice3point.Revit.ADSK.MEP;component/Resources/CopyADSK32.png"));
+                    "pack://application:,,,/Nice3point.Revit.ADSK.MEP;component/Resources/CheckADSK32.png"));
             }
 
             if (panel.AddItem(new PushButtonData("CopyADSK", "Копировать\nзначения",
@@ -43,27 +43,27 @@ namespace Nice3point.Revit.ADSK.MEP
             }
 
             if (panel.AddItem(new PushButtonData("CreateDuctSystemView",
-                "Создать\nсистемы воздуховодов",
+                "Создать системы\nвоздуховодов",
                 Assembly.GetExecutingAssembly().Location, typeof(CreateDuctSystemViews).FullName)) is PushButton buttonCreateDuctSystemView)
             {
                 buttonCreateDuctSystemView.ToolTip =
                     "Дублирования значений Имя системы для воздушных систем в проекте. Создание копий видов с фильтрами для данных систем";
                 buttonCreateDuctSystemView.Image = new BitmapImage(new Uri(
-                    "pack://application:,,,/Nice3point.Revit.ADSK.MEP;component/Resources/CopyADSK16.png"));
+                    "pack://application:,,,/Nice3point.Revit.ADSK.MEP;component/Resources/CreateDuctSystemViews16.png"));
                 buttonCreateDuctSystemView.LargeImage = new BitmapImage(new Uri(
-                    "pack://application:,,,/Nice3point.Revit.ADSK.MEP;component/Resources/CopyADSK32.png"));
+                    "pack://application:,,,/Nice3point.Revit.ADSK.MEP;component/Resources/CreateDuctSystemViews32.png"));
             }
 
             if (panel.AddItem(new PushButtonData("CreatePipeSystemView",
-                "Создать\nсистемы трубопроводов",
+                "Создать системы\nтрубопроводов",
                 Assembly.GetExecutingAssembly().Location, typeof(CreatePipeSystemViews).FullName)) is PushButton buttonCreatePipeSystemView)
             {
                 buttonCreatePipeSystemView.ToolTip =
                     "Дублирования значений Имя системы для трубопроводных систем в проекте. Создание копий видов с фильтрами для данных систем";
                 buttonCreatePipeSystemView.Image = new BitmapImage(new Uri(
-                    "pack://application:,,,/Nice3point.Revit.ADSK.MEP;component/Resources/CopyADSK16.png"));
+                    "pack://application:,,,/Nice3point.Revit.ADSK.MEP;component/Resources/CreatePipeSystemViews16.png"));
                 buttonCreatePipeSystemView.LargeImage = new BitmapImage(new Uri(
-                    "pack://application:,,,/Nice3point.Revit.ADSK.MEP;component/Resources/CopyADSK32.png"));
+                    "pack://application:,,,/Nice3point.Revit.ADSK.MEP;component/Resources/CreatePipeSystemViews32.png"));
             }
 
             if (panel.AddItem(new PushButtonData("CreateSpaces", "Создать\nпространства",
@@ -74,7 +74,7 @@ namespace Nice3point.Revit.ADSK.MEP
                 buttonCreateSpaces.Image = new BitmapImage(new Uri(
                     "pack://application:,,,/Nice3point.Revit.ADSK.MEP;component/Resources/CreateSpaces16.png"));
                 buttonCreateSpaces.LargeImage = new BitmapImage(new Uri(
-                    "pack://application:,,,/Nice3point.Revit.ADSK.MEP;component/Resources/CopyADSK32.png"));
+                    "pack://application:,,,/Nice3point.Revit.ADSK.MEP;component/Resources/CreateSpaces32.png"));
             }
 
             return Result.Succeeded;

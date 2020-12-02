@@ -11,9 +11,9 @@ namespace Nice3point.Revit.ADSK.MEP
     public class CreateDuctSystemViews : IExternalCommand
     {
         private UIDocument _uiDoc;
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            
             _uiDoc = commandData.Application.ActiveUIDocument;
             var doc = _uiDoc.Document;
             if (doc.ActiveView.ViewType != ViewType.ProjectBrowser)
@@ -110,13 +110,13 @@ namespace Nice3point.Revit.ADSK.MEP
             var eView = new FilteredElementCollector(doc)
                 .OfClass(typeof(View))
                 .WhereElementIsNotElementType()
-                .FirstOrDefault(v => v.Name == view.Name + systemName);
+                .FirstOrDefault(v => v.Name == $"{view.Name}_{systemName}");
             if (null == eView)
             {
                 var copyViewId = view.Duplicate(ViewDuplicateOption.Duplicate);
                 if (doc.GetElement(copyViewId) is View copiedView)
                 {
-                    copiedView.Name = view.Name + systemName;
+                    copiedView.Name = $"{view.Name}_{systemName}";
                     if (filter != null)
                     {
                         copiedView.AddFilter(filter.Id);
@@ -124,6 +124,7 @@ namespace Nice3point.Revit.ADSK.MEP
                     }
                 }
             }
+
             tr.Commit();
         }
 
@@ -131,7 +132,7 @@ namespace Nice3point.Revit.ADSK.MEP
         {
             var cats = new List<BuiltInCategory>
             {
-                BuiltInCategory.OST_DuctCurves, 
+                BuiltInCategory.OST_DuctCurves,
                 BuiltInCategory.OST_DuctAccessory,
                 BuiltInCategory.OST_DuctFitting,
                 BuiltInCategory.OST_DuctInsulations,

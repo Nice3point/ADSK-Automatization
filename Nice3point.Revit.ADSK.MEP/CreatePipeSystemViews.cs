@@ -102,14 +102,13 @@ namespace Nice3point.Revit.ADSK.MEP
             var eView = new FilteredElementCollector(doc)
                 .OfClass(typeof(View))
                 .WhereElementIsNotElementType()
-                .FirstOrDefault(v => v.Name == view.Name + systemName);
+                .FirstOrDefault(v => v.Name == $"{view.Name}_{systemName}");
             if (null == eView)
             {
                 var copyViewId = view.Duplicate(ViewDuplicateOption.Duplicate);
-                var copiedView = doc.GetElement(copyViewId) as View;
-                if (copiedView != null)
+                if (doc.GetElement(copyViewId) is View copiedView)
                 {
-                    copiedView.Name = view.Name + systemName;
+                    copiedView.Name = $"{view.Name}_{systemName}";
                     if (filter != null)
                     {
                         copiedView.AddFilter(filter.Id);

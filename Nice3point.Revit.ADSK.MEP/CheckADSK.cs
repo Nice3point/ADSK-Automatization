@@ -47,9 +47,9 @@ namespace Nice3point.Revit.ADSK.MEP
                     }
 
                 var text = log.ToString().Replace(';', '\t');
-                using (var sWriter = new StreamWriter(logFile))
+                using (var sWriter = new StreamWriter(logFile, false, Encoding.GetEncoding("windows-1251")))
                 {
-                    sWriter.Write(text, Encoding.Unicode);
+                    sWriter.Write(text);
                 }
 
                 var td = new TaskDialog("Check_Family")

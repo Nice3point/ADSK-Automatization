@@ -25,6 +25,9 @@ namespace Nice3point.Revit.ADSK.MEP
                 "В_ОВ_Гибкие трубы",
                 "В_ОВ_Изоляция труб",
                 "В_ОВ_Трубопроводы",
+                "В_ВК_Гибкие трубы",
+                "В_ВК_Изоляция труб",
+                "В_ВК_Трубопроводы",
                 "В_ТМ_Гибкие воздуховоды",
                 "В_ТМ_Изоляция воздуховодов",
                 "В_ТМ_Круглые воздуховоды",
@@ -94,7 +97,7 @@ namespace Nice3point.Revit.ADSK.MEP
             var tData = vs.GetTableData();
             var tsDada = tData.GetSectionData(SectionType.Body);
             using var tGroup =
-                new TransactionGroup(doc, "Заполнение данных ADSK_Наименование для спецификации: " + vs.Name);
+                new TransactionGroup(doc, "Заполнение ADSK_Наименование в спецификациях");
             tGroup.Start();
             for (var rInd = 0; rInd < tsDada.NumberOfRows; rInd++)
             {
