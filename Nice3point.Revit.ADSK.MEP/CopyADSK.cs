@@ -11,27 +11,20 @@ namespace Nice3point.Revit.ADSK.MEP
     [Transaction(TransactionMode.Manual)]
     public class CopyAdsk : IExternalCommand
     {
-        #region ADSK guids
-
-        private static readonly Guid AdskPosition = new Guid("ae8ff999-1f22-4ed7-ad33-61503d85f0f4"); //Позиция
-        private static readonly Guid AdskName = new Guid("e6e0f5cd-3e26-485b-9342-23882b20eb43"); //Наименование
-        private static readonly Guid AdskType = new Guid("2204049c-d557-4dfc-8d70-13f19715e46d"); //Тип,Марка
-        private static readonly Guid AdskCode = new Guid("2fd9e8cb-84f3-4297-b8b8-75f444e124ed"); //Код оборудования
-        private static readonly Guid AdskManufacturer = new Guid("a8cdbf7b-d60a-485e-a520-447d2055f351"); //Завод изготовитель
-        private static readonly Guid AdskUnit = new Guid("4289cb19-9517-45de-9c02-5a74ebf5c86d"); //Единица измерения
-        private static readonly Guid AdskQuantity = new Guid("8d057bb3-6ccd-4655-9165-55526691fe3a"); //Кол-во
-        private static readonly Guid AdskMass = new Guid("32989501-0d17-4916-8777-da950841c6d7"); //Масса единицы
-        private static readonly Guid AdskMassDimension = new Guid("5913a1f9-0b38-4364-96fe-a6f3cb7fcc68"); //Масса  с размерностью
-        private static readonly Guid AdskNote = new Guid("a85b7661-26b0-412f-979c-66af80b4b2c3"); //Примечание
-
-        #endregion
-
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             var uiDoc = commandData.Application.ActiveUIDocument;
             var doc = uiDoc.Document;
             var viewSchedules = new List<string>
             {
+                "В_ОВ_Гибкие воздуховоды",
+                "В_ОВ_Изоляция воздуховодов",
+                "В_ОВ_Круглые воздуховоды",
+                "В_ОВ_Прямоугольные воздуховоды",
+                "В_ОВ_Фасонные детали воздуховодов",
+                "В_ОВ_Гибкие трубы",
+                "В_ОВ_Изоляция труб",
+                "В_ОВ_Трубопроводы",
                 "В_ТМ_Гибкие воздуховоды",
                 "В_ТМ_Изоляция воздуховодов",
                 "В_ТМ_Круглые воздуховоды",
@@ -40,7 +33,11 @@ namespace Nice3point.Revit.ADSK.MEP
                 "В_ТМ_Гибкие трубы",
                 "В_ТМ_Изоляция труб",
                 "В_ТМ_Трубопроводы",
-                "В_ТМ_Технико-экономические показатели"
+                "В_ТМ_Технико-экономические показатели",
+                "В_ГСВ_Гибкие трубы",
+                "В_ГСВ_Изоляция труб",
+                "В_ГСВ_Трубопроводы",
+                "В_ГСВ_Технико-экономические показатели"
             };
             foreach (var curViewSchedule in viewSchedules.Select(vSchedule => new FilteredElementCollector(doc)
                 .OfClass(typeof(ViewSchedule))
@@ -49,18 +46,14 @@ namespace Nice3point.Revit.ADSK.MEP
                 uiDoc.ActiveView = curViewSchedule;
                 CopyToAdsk(doc, curViewSchedule);
                 foreach (var uiView in uiDoc.GetOpenUIViews())
-                {
                     if (curViewSchedule.Id == uiView.ViewId)
-                    {
                         uiView.Close();
-                    }
-                }
             }
 
             return Result.Succeeded;
         }
 
-        private void CopyToAdsk(Document doc, ViewSchedule vs)
+        private static void CopyToAdsk(Document doc, ViewSchedule vs)
         {
             var copyLength = false;
             var copyVolume = false;
@@ -91,7 +84,8 @@ namespace Nice3point.Revit.ADSK.MEP
                 new ElementId(BuiltInCategory.OST_DuctInsulations).IntegerValue)
                 copyArea = true;
 
-            if (vs.Name.Equals("В_ТМ_Технико-экономические показатели"))
+            if (vs.Name.Equals("В_ТМ_Технико-экономические показатели") |
+                vs.Name.Equals("В_ГСВ_Технико-экономические показатели"))
             {
                 copyMass = true;
                 copyValue = false;
@@ -104,7 +98,7 @@ namespace Nice3point.Revit.ADSK.MEP
             tGroup.Start();
             for (var rInd = 0; rInd < tsDada.NumberOfRows; rInd++)
             {
-                var elementsOnRow = GetElementsOnRow(doc, vs, rInd);
+                var elementsOnRow = CommonFunctions.GetElementsOnRow(doc, vs, rInd);
                 if (null == elementsOnRow) continue;
                 string dataValue;
                 string commentValue;
@@ -134,7 +128,8 @@ namespace Nice3point.Revit.ADSK.MEP
         private static double GetPercentGlobal(Document doc)
         {
             double percent = 1;
-            var percentValue = new FilteredElementCollector(doc).OfClass(typeof(GlobalParameter))
+            var percentValue = new FilteredElementCollector(doc)
+                .OfClass(typeof(GlobalParameter))
                 .Cast<GlobalParameter>()
                 .FirstOrDefault(gp => gp.Name.Equals("Спецификация_ЗапасДлины"));
             if (percentValue == null) return percent;
@@ -147,7 +142,7 @@ namespace Nice3point.Revit.ADSK.MEP
             using var tr = new Transaction(doc, "Заполнение значений ADSK_Наименование");
             tr.Start();
             foreach (var curElement in elements)
-                curElement.get_Parameter(AdskName).Set(valueData); // Заполнение параметра ADSK_Наименование
+                curElement.get_Parameter(AdskGuid.AdskName).Set(valueData); // Заполнение параметра ADSK_Наименование
             tr.Commit();
         }
 
@@ -163,27 +158,27 @@ namespace Nice3point.Revit.ADSK.MEP
                 {
                     if (doc.GetElement(fp.GetTypeId()) is FlexPipeType fpt &&
                         Math.Abs(fpt.LookupParameter("Тип трубопровода").AsDouble() - 3) < 0.1)
-                        curElement.get_Parameter(AdskQuantity)
+                        curElement.get_Parameter(AdskGuid.AdskQuantity)
                             .Set(1.0); // Заполнение параметра ADSK_Количество для гибкой трубы - Гибкая подводка.
                     else
-                        curElement.get_Parameter(AdskQuantity)
+                        curElement.get_Parameter(AdskGuid.AdskQuantity)
                             .Set(len); // Заполнение параметра ADSK_Количество для любых других гибких труб.
                 }
                 else
                 {
-                    curElement.get_Parameter(AdskQuantity)
+                    curElement.get_Parameter(AdskGuid.AdskQuantity)
                         .Set(len); // Заполнение параметра ADSK_Количество для линейных элементов, трубы и воздуховоды
                 }
 
                 if (copyComm)
-                    curElement.get_Parameter(AdskNote)
+                    curElement.get_Parameter(AdskGuid.AdskNote)
                         .Set(commentValue); // Заполнение параметра ADSK_Примечание, площадь для воздуховодов
             }
 
             tr.Commit();
         }
 
-        private static void CopyVolumeValue(Document doc, List<Element> elements)
+        private static void CopyVolumeValue(Document doc, IEnumerable<Element> elements)
         {
             using var tr = new Transaction(doc, "Заполнение значений ADSK_Количество");
             tr.Start();
@@ -191,13 +186,13 @@ namespace Nice3point.Revit.ADSK.MEP
             {
                 var len = curElement.get_Parameter(BuiltInParameter.RBS_INSULATION_LINING_VOLUME).AsDouble();
                 len = UnitUtils.ConvertFromInternalUnits(len, UnitTypeId.CubicMeters);
-                curElement.get_Parameter(AdskQuantity).Set(len); // Заполнение параметра ADSK_Количество
+                curElement.get_Parameter(AdskGuid.AdskQuantity).Set(len); // Заполнение параметра ADSK_Количество
             }
 
             tr.Commit();
         }
 
-        private static void CopyAreaValue(Document doc, List<Element> elements)
+        private static void CopyAreaValue(Document doc, IEnumerable<Element> elements)
         {
             using var tr = new Transaction(doc, "Заполнение значений ADSK_Количество");
             tr.Start();
@@ -205,7 +200,7 @@ namespace Nice3point.Revit.ADSK.MEP
             {
                 var len = curElement.get_Parameter(BuiltInParameter.RBS_CURVE_SURFACE_AREA).AsDouble();
                 len = UnitUtils.ConvertFromInternalUnits(len, UnitTypeId.SquareMeters);
-                curElement.get_Parameter(AdskQuantity).Set(len); // Заполнение параметра ADSK_Количество
+                curElement.get_Parameter(AdskGuid.AdskQuantity).Set(len); // Заполнение параметра ADSK_Количество
             }
 
             tr.Commit();
@@ -219,7 +214,7 @@ namespace Nice3point.Revit.ADSK.MEP
             foreach (var curElement in elements)
                 try
                 {
-                    curElement.get_Parameter(AdskMassDimension)
+                    curElement.get_Parameter(AdskGuid.AdskMassDimension)
                         .Set(double.Parse(doubleValueData)); // Заполнение параметра ADSK_Масса элемента
                 }
                 catch (Exception)
@@ -246,41 +241,6 @@ namespace Nice3point.Revit.ADSK.MEP
             }
 
             tr.Commit();
-        }
-
-        private static List<Element> GetElementsOnRow(Document doc, ViewSchedule vs, int rowNumber)
-        {
-            var tableData = vs.GetTableData();
-            var tableSectionData = tableData.GetSectionData(SectionType.Body);
-            var elemIds = new FilteredElementCollector(doc, vs.Id).ToElementIds().ToList();
-            List<ElementId> remainingElementsIds;
-
-            using (var t = new Transaction(doc, "Empty"))
-            {
-                t.Start();
-                using (var st = new SubTransaction(doc))
-                {
-                    st.Start();
-                    try
-                    {
-                        tableSectionData.RemoveRow(rowNumber);
-                    }
-                    catch (Exception)
-                    {
-                        return null;
-                    }
-
-                    st.Commit();
-                }
-
-                remainingElementsIds = new FilteredElementCollector(doc, vs.Id).ToElementIds().ToList();
-                t.RollBack();
-            }
-
-            return elemIds
-                .Where(id => !remainingElementsIds.Contains(id))
-                .Select(doc.GetElement)
-                .ToList();
         }
     }
 }
