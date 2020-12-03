@@ -157,7 +157,7 @@ namespace Nice3point.Revit.ADSK.MEP
             {
                 var len = curElement.get_Parameter(BuiltInParameter.CURVE_ELEM_LENGTH).AsDouble();
                 var quantityParam = curElement.get_Parameter(AdskGuid.AdskQuantity);
-                len = UnitUtils.ConvertFromInternalUnits(len, UnitTypeId.Meters) * GetPercentGlobal(doc);
+                len = UnitUtils.ConvertFromInternalUnits(len, DisplayUnitType.DUT_METERS) * GetPercentGlobal(doc);
                 if (curElement is FlexPipe fp)
                 {
                     if (doc.GetElement(fp.GetTypeId()) is FlexPipeType fpt &&
@@ -188,7 +188,7 @@ namespace Nice3point.Revit.ADSK.MEP
             foreach (var curElement in elements)
             {
                 var len = curElement.get_Parameter(BuiltInParameter.RBS_INSULATION_LINING_VOLUME).AsDouble();
-                len = UnitUtils.ConvertFromInternalUnits(len, UnitTypeId.CubicMeters);
+                len = UnitUtils.ConvertFromInternalUnits(len, DisplayUnitType.DUT_CUBIC_METERS);
                 curElement.get_Parameter(AdskGuid.AdskQuantity).Set(len); // Заполнение параметра ADSK_Количество
             }
 
@@ -202,7 +202,7 @@ namespace Nice3point.Revit.ADSK.MEP
             foreach (var curElement in elements)
             {
                 var len = curElement.get_Parameter(BuiltInParameter.RBS_CURVE_SURFACE_AREA).AsDouble();
-                len = UnitUtils.ConvertFromInternalUnits(len, UnitTypeId.SquareMeters);
+                len = UnitUtils.ConvertFromInternalUnits(len, DisplayUnitType.DUT_SQUARE_METERS);
                 curElement.get_Parameter(AdskGuid.AdskQuantity).Set(len); // Заполнение параметра ADSK_Количество
             }
 
@@ -234,7 +234,7 @@ namespace Nice3point.Revit.ADSK.MEP
                 if (systemType == null) continue;
                 var temperature = systemType.FluidTemperature;
                 var temperatureParam = curElement.LookupParameter("Температура трубопровода");
-                temperatureParam?.Set(UnitUtils.ConvertFromInternalUnits(temperature, UnitTypeId.Kelvin));
+                temperatureParam?.Set(UnitUtils.ConvertFromInternalUnits(temperature, DisplayUnitType.DUT_KELVIN));
             }
 
             tr.Commit();

@@ -175,7 +175,7 @@ namespace Nice3point.Revit.ADSK.MEP
                                     sp.UpperLimit = GetLevelByElevation(_doc, localLevel.Elevation);
                                     sp.get_Parameter(BuiltInParameter.ROOM_UPPER_OFFSET)
                                         .Set(UnitUtils.ConvertToInternalUnits(defLimitOffset,
-                                            UnitTypeId.Millimeters));
+                                           DisplayUnitType.DUT_MILLIMETERS));
                                 }
                                 else
                                 {
@@ -221,7 +221,7 @@ namespace Nice3point.Revit.ADSK.MEP
                                         var upperLevel = localLevel;
                                         wSpace.UpperLimit = upperLevel;
                                         wSpace.get_Parameter(BuiltInParameter.ROOM_UPPER_OFFSET)
-                                            .Set(UnitUtils.ConvertToInternalUnits(defLimitOffset, UnitTypeId.Millimeters));
+                                            .Set(UnitUtils.ConvertToInternalUnits(defLimitOffset, DisplayUnitType.DUT_MILLIMETERS));
                                     }
                                     else
                                     {

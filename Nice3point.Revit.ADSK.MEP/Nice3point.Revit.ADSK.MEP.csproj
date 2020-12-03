@@ -34,18 +34,20 @@
     </PropertyGroup>
     <ItemGroup>
         <Reference Include="PresentationCore" />
-        <Reference Include="RevitAPI, Version=21.0.0.0, Culture=neutral, PublicKeyToken=null">
-            <HintPath>C:\Program Files\Autodesk\Revit 2021\RevitAPI.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="PresentationFramework" />
+        <Reference Include="RevitAPI, Version=19.0.0.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>C:\Program Files\Autodesk\Revit 2019\RevitAPI.dll</HintPath>
+          <Private>False</Private>
         </Reference>
-        <Reference Include="RevitAPIUI, Version=21.0.0.0, Culture=neutral, PublicKeyToken=null">
-            <HintPath>C:\Program Files\Autodesk\Revit 2021\RevitAPIUI.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="RevitAPIUI, Version=19.0.0.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>C:\Program Files\Autodesk\Revit 2019\RevitAPIUI.dll</HintPath>
+          <Private>False</Private>
         </Reference>
         <Reference Include="System" />
         <Reference Include="System.Core" />
         <Reference Include="System.Data" />
         <Reference Include="System.Windows.Forms" />
+        <Reference Include="System.Xaml" />
         <Reference Include="System.Xml" />
         <Reference Include="WindowsBase" />
     </ItemGroup>
@@ -56,6 +58,9 @@
         <Compile Include="CheckADSK.cs" />
         <Compile Include="CommonFunctions.cs" />
         <Compile Include="CopyADSK.cs" />
+        <Compile Include="CopyADSKSettings.xaml.cs">
+          <DependentUpon>CopyADSKSettings.xaml</DependentUpon>
+        </Compile>
         <Compile Include="CreateDuctSystemViews.cs" />
         <Compile Include="CreatePipeSystemViews.cs" />
         <Compile Include="CreateSpaces.cs" />
@@ -85,6 +90,9 @@
     </ItemGroup>
     <ItemGroup>
       <Folder Include="bin\Debug" />
+    </ItemGroup>
+    <ItemGroup>
+      <Page Include="CopyADSKSettings.xaml" />
     </ItemGroup>
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
          Other similar extension points exist, see Microsoft.Common.targets.
