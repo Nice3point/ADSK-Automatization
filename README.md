@@ -1,7 +1,9 @@
 <h3 align="center"><img src="https://i.imgur.com/mLrwrRs.png" width="500px"></h3>
 <p align="center">
   <a href="https://github.com/Nice3point/ADSK-Automatization/releases/latest"><img src="https://img.shields.io/github/release/Nice3point/ADSK-Automatization"></a>
-    <a href="https://github.com/Nice3point/ADSK-Automatization/issues"><img src="https://img.shields.io/github/issues/Nice3point/ADSK-Automatization"></a>
+  <a href="https://github.com/Nice3point/ADSK-Automatization/issues"><img src="https://img.shields.io/github/issues/Nice3point/ADSK-Automatization"></a>
+  <a href="https://github.com/Nice3point/ADSK-Automatization/commits/main"><img src="https://img.shields.io/github/last-commit/Nice3point/ADSK-Automatization"></a>
+ 
 </p>
   
 Неофициальный плагин для работы с шаблонами ОВ и ВК от ADSK для Revit.   
