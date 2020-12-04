@@ -6,7 +6,7 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Plumbing;
 using Autodesk.Revit.UI;
 
-namespace Nice3point.Revit.ADSK.MEP
+namespace Nice3point.Revit.ADSK.MEP.Commands
 {
     [Transaction(TransactionMode.Manual)]
     public class CopyAdsk : IExternalCommand
@@ -149,7 +149,7 @@ namespace Nice3point.Revit.ADSK.MEP
             tr.Commit();
         }
 
-        private static void CopyLengthValue(Document doc, bool copyComm, string commentValue, List<Element> elements)
+        private static void CopyLengthValue(Document doc, bool copyComm, string commentValue, IEnumerable<Element> elements)
         {
             using var tr = new Transaction(doc, "Заполнение значений ADSK_Количество и ADSK_Примечание");
             tr.Start();

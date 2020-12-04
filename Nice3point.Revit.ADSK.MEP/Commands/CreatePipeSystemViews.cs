@@ -5,10 +5,10 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.Exceptions;
 using Autodesk.Revit.UI;
 
-namespace Nice3point.Revit.ADSK.MEP
+namespace Nice3point.Revit.ADSK.MEP.Commands
 {
     [Transaction(TransactionMode.Manual)]
-    public class CreateDuctSystemViews : IExternalCommand
+    public class CreatePipeSystemViews : IExternalCommand
     {
         private UIDocument _uiDoc;
 
@@ -21,7 +21,7 @@ namespace Nice3point.Revit.ADSK.MEP
                 using (var trg = new TransactionGroup(doc, "Копирование значений имя системы"))
                 {
                     trg.Start();
-                    foreach (var cat in GetDuctCategories())
+                    foreach (var cat in GetPipeCategories())
                     {
                         var elementsByCat = new FilteredElementCollector(doc)
                             .OfCategory(cat)
@@ -41,7 +41,7 @@ namespace Nice3point.Revit.ADSK.MEP
                     TitleAutoPrefix = false,
                     AllowCancellation = true,
                     MainInstruction =
-                        "Данные из параметра Имя системы для всех элементов систем воздуховодов скопированы",
+                        "Данные из параметра Имя системы для всех элементов трубопроводных систем скопированы",
                     MainContent = "Хотите создать копии текущего вида с применением фильтров по системам?"
                 };
 
@@ -53,8 +53,8 @@ namespace Nice3point.Revit.ADSK.MEP
                     .OfClass(typeof(ParameterElement))
                     .FirstOrDefault(p => p.Name == "ИмяСистемы");
                 var sysNameParam = sysNameParamElement as ParameterElement;
-                foreach (var systemName in GetDuctSystemNames(doc))
-                    CreateFilterForDuctSystem(doc, sysNameParam, systemName);
+                foreach (var systemName in GetPipeSystemNames(doc))
+                    CreateFilterForPipeSystem(doc, sysNameParam, systemName);
             }
             else
             {
@@ -64,31 +64,23 @@ namespace Nice3point.Revit.ADSK.MEP
             return Result.Succeeded;
         }
 
-        private static IEnumerable<string> GetDuctSystemNames(Document doc)
-        {
-            return new FilteredElementCollector(doc)
-                .OfCategory(BuiltInCategory.OST_DuctSystem)
-                .WhereElementIsNotElementType()
-                .Select(s => s.Name)
-                .ToList();
-        }
-
-        private void CreateFilterForDuctSystem(Document doc, Element sysNameParam, string systemName)
+        private void CreateFilterForPipeSystem(Document doc, Element sysNameParam, string systemName)
         {
             using var tr = new Transaction(doc, "Создание фильтра для: " + systemName);
             tr.Start();
             var view = _uiDoc.ActiveView;
             var categories = new List<ElementId>
             {
-                new ElementId(BuiltInCategory.OST_DuctAccessory),
-                new ElementId(BuiltInCategory.OST_DuctCurves),
-                new ElementId(BuiltInCategory.OST_DuctFitting),
-                new ElementId(BuiltInCategory.OST_DuctInsulations),
-                new ElementId(BuiltInCategory.OST_DuctTerminal),
-                new ElementId(BuiltInCategory.OST_FlexDuctCurves),
-                new ElementId(BuiltInCategory.OST_PlaceHolderDucts),
+                new ElementId(BuiltInCategory.OST_PipeAccessory),
+                new ElementId(BuiltInCategory.OST_PipeCurves),
+                new ElementId(BuiltInCategory.OST_PipeFitting),
+                new ElementId(BuiltInCategory.OST_PipeInsulations),
+                new ElementId(BuiltInCategory.OST_PlumbingFixtures),
+                new ElementId(BuiltInCategory.OST_FlexPipeCurves),
+                new ElementId(BuiltInCategory.OST_PlaceHolderPipes),
                 new ElementId(BuiltInCategory.OST_GenericModel),
-                new ElementId(BuiltInCategory.OST_MechanicalEquipment)
+                new ElementId(BuiltInCategory.OST_MechanicalEquipment),
+                new ElementId(BuiltInCategory.OST_Sprinklers)
             };
             var rule = ParameterFilterRuleFactory.CreateNotContainsRule(sysNameParam.Id, systemName, true);
             var epf = new ElementParameterFilter(rule);
@@ -96,13 +88,13 @@ namespace Nice3point.Revit.ADSK.MEP
             ParameterFilterElement filter;
             try
             {
-                filter = ParameterFilterElement.Create(doc, "ADSK_Воздуховод_" + systemName, categories, ef);
+                filter = ParameterFilterElement.Create(doc, "ADSK_Трубопровод_" + systemName, categories, ef);
             }
             catch (ArgumentException)
             {
                 var filter1 = new FilteredElementCollector(doc)
                     .OfClass(typeof(ParameterFilterElement))
-                    .First(f => f.Name == "ADSK_Воздуховод_" + systemName);
+                    .FirstOrDefault(f => f.Name == "ADSK_Трубопровод_" + systemName);
                 filter = filter1 as ParameterFilterElement;
                 filter?.SetElementFilter(ef);
             }
@@ -128,18 +120,28 @@ namespace Nice3point.Revit.ADSK.MEP
             tr.Commit();
         }
 
-        private static IEnumerable<BuiltInCategory> GetDuctCategories()
+        private static IEnumerable<string> GetPipeSystemNames(Document doc)
+        {
+            return new FilteredElementCollector(doc)
+                .OfCategory(BuiltInCategory.OST_PipingSystem)
+                .WhereElementIsNotElementType()
+                .Select(s => s.Name)
+                .ToList();
+        }
+
+        private static IEnumerable<BuiltInCategory> GetPipeCategories()
         {
             var cats = new List<BuiltInCategory>
             {
-                BuiltInCategory.OST_DuctCurves,
-                BuiltInCategory.OST_DuctAccessory,
-                BuiltInCategory.OST_DuctFitting,
-                BuiltInCategory.OST_DuctInsulations,
-                BuiltInCategory.OST_DuctTerminal,
-                BuiltInCategory.OST_FlexDuctCurves,
-                BuiltInCategory.OST_PlaceHolderDucts,
-                BuiltInCategory.OST_MechanicalEquipment
+                BuiltInCategory.OST_PipeAccessory,
+                BuiltInCategory.OST_PipeCurves,
+                BuiltInCategory.OST_PipeFitting,
+                BuiltInCategory.OST_PipeInsulations,
+                BuiltInCategory.OST_PlumbingFixtures,
+                BuiltInCategory.OST_FlexPipeCurves,
+                BuiltInCategory.OST_PlaceHolderPipes,
+                BuiltInCategory.OST_MechanicalEquipment,
+                BuiltInCategory.OST_Sprinklers
             };
             return cats;
         }

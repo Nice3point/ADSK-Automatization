@@ -4,7 +4,7 @@ using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 
-namespace Nice3point.Revit.ADSK.MEP
+namespace Nice3point.Revit.ADSK.MEP.Commands
 {
     [Transaction(TransactionMode.Manual)]
     public class AutoNumerate : IExternalCommand

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Autodesk.Revit.DB;
 
-namespace Nice3point.Revit.ADSK.MEP
+namespace Nice3point.Revit.ADSK.MEP.Commands
 {
     public static class CommonFunctions
     {

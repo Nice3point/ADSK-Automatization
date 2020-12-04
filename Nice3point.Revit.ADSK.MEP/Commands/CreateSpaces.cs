@@ -9,7 +9,7 @@ using Autodesk.Revit.DB.Mechanical;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
 
-namespace Nice3point.Revit.ADSK.MEP
+namespace Nice3point.Revit.ADSK.MEP.Commands
 {
     [Transaction(TransactionMode.Manual)]
     public class CreateSpaces : IExternalCommand
@@ -17,12 +17,12 @@ namespace Nice3point.Revit.ADSK.MEP
         private static ICollection<ElementId> _warnElements = new List<ElementId>();
         private readonly Stopwatch _sTimer = new Stopwatch();
         private Document _doc;
-        private UIDocument _uiDoc;
         private List<LevelsData> _levelsDataCreation;
         private Document _linkedDoc;
         private List<RoomsData> _roomsDataList;
         private List<SpacesData> _spacesDataList;
         private Transform _tGlobal;
+        private UIDocument _uiDoc;
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
@@ -32,16 +32,16 @@ namespace Nice3point.Revit.ADSK.MEP
             _doc = commandData.Application.ActiveUIDocument.Document;
             if (null == _uiDoc || _doc.IsFamilyDocument) return Result.Failed;
             //Start taskDialog for select link
-            if (TdSelectArLink() == 0) return Result.Cancelled; 
+            if (TdSelectArLink() == 0) return Result.Cancelled;
 
             var arLink = GetArLinkReference();
             if (null == arLink) return Result.Cancelled;
             //Get value for Room bounding in RevitLinkType
             if (_doc.GetElement(arLink.ElementId) is RevitLinkInstance selInstance)
             {
-                var lnkType = _doc.GetElement(selInstance.GetTypeId()) as RevitLinkType;
                 var boundingWalls =
-                    lnkType != null && Convert.ToBoolean(lnkType.get_Parameter(BuiltInParameter.WALL_ATTR_ROOM_BOUNDING).AsInteger());
+                    _doc.GetElement(selInstance.GetTypeId()) is RevitLinkType lnkType &&
+                    Convert.ToBoolean(lnkType.get_Parameter(BuiltInParameter.WALL_ATTR_ROOM_BOUNDING).AsInteger());
                 //Get coordination transformation for link
                 _tGlobal = selInstance.GetTotalTransform();
                 //Get Document from RvtLinkInstance
@@ -175,7 +175,7 @@ namespace Nice3point.Revit.ADSK.MEP
                                     sp.UpperLimit = GetLevelByElevation(_doc, localLevel.Elevation);
                                     sp.get_Parameter(BuiltInParameter.ROOM_UPPER_OFFSET)
                                         .Set(UnitUtils.ConvertToInternalUnits(defLimitOffset,
-                                           DisplayUnitType.DUT_MILLIMETERS));
+                                            DisplayUnitType.DUT_MILLIMETERS));
                                 }
                                 else
                                 {
@@ -221,7 +221,8 @@ namespace Nice3point.Revit.ADSK.MEP
                                         var upperLevel = localLevel;
                                         wSpace.UpperLimit = upperLevel;
                                         wSpace.get_Parameter(BuiltInParameter.ROOM_UPPER_OFFSET)
-                                            .Set(UnitUtils.ConvertToInternalUnits(defLimitOffset, DisplayUnitType.DUT_MILLIMETERS));
+                                            .Set(UnitUtils.ConvertToInternalUnits(defLimitOffset,
+                                                DisplayUnitType.DUT_MILLIMETERS));
                                     }
                                     else
                                     {
@@ -254,6 +255,7 @@ namespace Nice3point.Revit.ADSK.MEP
             };
             tDialog.Show();
         }
+
         private static Level GetLevelByElevation(Document doc, double elevation)
         {
             return new FilteredElementCollector(doc)
@@ -262,25 +264,6 @@ namespace Nice3point.Revit.ADSK.MEP
                 .FirstOrDefault(l => l.Elevation.Equals(elevation));
         }
 
-        private class SpaceExistWarner : IFailuresPreprocessor
-        {
-            public FailureProcessingResult PreprocessFailures(FailuresAccessor a)
-            {
-                var failures = a.GetFailureMessages();
-                foreach (var f in failures)
-                {
-                    var id = f.GetFailureDefinitionId();
-                    if (BuiltInFailures.GeneralFailures.DuplicateValue == id) a.DeleteWarning(f);
-
-                    if (BuiltInFailures.RoomFailures.RoomsInSameRegionSpaces != id) continue;
-                    _warnElements = f.GetFailingElementIds();
-                    a.DeleteWarning(f);
-                    return FailureProcessingResult.ProceedWithRollBack;
-                }
-
-                return FailureProcessingResult.Continue;
-            }
-        }
         private static int TdSpacesPlace()
         {
             var td = new TaskDialog("Spaces place Type")
@@ -389,18 +372,6 @@ namespace Nice3point.Revit.ADSK.MEP
                 _ => throw new Exception("Invalid value for TaskDialogResult")
             };
         }
-        private class RvtLinkInstanceFilter : ISelectionFilter
-        {
-            public bool AllowElement(Element element)
-            {
-                return element is RevitLinkInstance;
-            }
-
-            public bool AllowReference(Reference refer, XYZ point)
-            {
-                return false;
-            }
-        }
 
         private Reference GetArLinkReference()
         {
@@ -414,6 +385,39 @@ namespace Nice3point.Revit.ADSK.MEP
             {
                 //user abort selection or other
                 return null;
+            }
+        }
+
+        private class SpaceExistWarner : IFailuresPreprocessor
+        {
+            public FailureProcessingResult PreprocessFailures(FailuresAccessor a)
+            {
+                var failures = a.GetFailureMessages();
+                foreach (var f in failures)
+                {
+                    var id = f.GetFailureDefinitionId();
+                    if (BuiltInFailures.GeneralFailures.DuplicateValue == id) a.DeleteWarning(f);
+
+                    if (BuiltInFailures.RoomFailures.RoomsInSameRegionSpaces != id) continue;
+                    _warnElements = f.GetFailingElementIds();
+                    a.DeleteWarning(f);
+                    return FailureProcessingResult.ProceedWithRollBack;
+                }
+
+                return FailureProcessingResult.Continue;
+            }
+        }
+
+        private class RvtLinkInstanceFilter : ISelectionFilter
+        {
+            public bool AllowElement(Element element)
+            {
+                return element is RevitLinkInstance;
+            }
+
+            public bool AllowReference(Reference refer, XYZ point)
+            {
+                return false;
             }
         }
 

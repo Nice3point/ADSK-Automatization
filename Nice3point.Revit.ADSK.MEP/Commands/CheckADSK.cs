@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Autodesk.Revit.DB;
-using Autodesk.Revit.UI;
 using System.Windows.Forms;
 using Autodesk.Revit.Attributes;
+using Autodesk.Revit.DB;
+using Autodesk.Revit.UI;
 
-namespace Nice3point.Revit.ADSK.MEP
+namespace Nice3point.Revit.ADSK.MEP.Commands
 {
     [Transaction(TransactionMode.ReadOnly)]
     public class CheckAdsk : IExternalCommand
@@ -21,8 +21,8 @@ namespace Nice3point.Revit.ADSK.MEP
             if (CheckOpenedFamilies(doc))
             {
                 var fPath = SelectFolder();
+                if (fPath.Equals("")) return Result.Cancelled;
                 var logFile = Path.Combine(fPath, "Log_ADSK_Checker.csv");
-                if (fPath == "") return Result.Cancelled;
                 var lFiles = new List<string>();
                 var lFilesBck = new List<string>();
                 var files = Directory.GetFiles(fPath, "*.rfa", SearchOption.AllDirectories);

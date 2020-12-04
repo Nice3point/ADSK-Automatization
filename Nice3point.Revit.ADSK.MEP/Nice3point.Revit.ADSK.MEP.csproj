@@ -54,22 +54,27 @@
     <ItemGroup>
         <Compile Include="AdskGuid.cs" />
         <Compile Include="Application.cs" />
-        <Compile Include="AutoNumerate.cs" />
-        <Compile Include="CheckADSK.cs" />
-        <Compile Include="CommonFunctions.cs" />
-        <Compile Include="CopyADSK.cs" />
-        <Compile Include="CopyADSKSettings.xaml.cs">
+        <Compile Include="Commands\AutoNumerate.cs" />
+        <Compile Include="Commands\CheckADSK.cs" />
+        <Compile Include="Commands\CommonFunctions.cs" />
+        <Compile Include="Commands\CopyADSK.cs" />
+        <Compile Include="Commands\CreateDuctSystemViews.cs" />
+        <Compile Include="Commands\CreatePipeSystemViews.cs" />
+        <Compile Include="Commands\CreateSpaces.cs" />
+        <Compile Include="Commands\SettingsCopyADSK.cs" />
+        <Compile Include="Properties\AssemblyInfo.cs" />
+        <Compile Include="Styles\SettingsWindowStyleDictionary.cs" />
+        <Compile Include="UI\CopyADSKSettings.xaml.cs">
           <DependentUpon>CopyADSKSettings.xaml</DependentUpon>
         </Compile>
-        <Compile Include="CreateDuctSystemViews.cs" />
-        <Compile Include="CreatePipeSystemViews.cs" />
-        <Compile Include="CreateSpaces.cs" />
-        <Compile Include="Properties\AssemblyInfo.cs" />
     </ItemGroup>
     <ItemGroup>
         <Content Include="Nice3point.Revit.ADSK.MEP.addin">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
+        <Resource Include="Resources\SettingsCopyADSK16.png" />
+        <Resource Include="Resources\SettingsCopyADSK32.png" />
+        <Resource Include="Resources\WindowSettings.ico" />
         <Resource Include="Resources\AutoNumerate16.png" />
         <Resource Include="Resources\AutoNumerate32.png" />
         <Resource Include="Resources\CheckADSK16.png" />
@@ -92,13 +97,16 @@
       <Folder Include="bin\Debug" />
     </ItemGroup>
     <ItemGroup>
-      <Page Include="CopyADSKSettings.xaml" />
+      <Page Include="Styles\SettingsWindowStyleDictionary.xaml" />
+      <Page Include="UI\CopyADSKSettings.xaml" />
     </ItemGroup>
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
          Other similar extension points exist, see Microsoft.Common.targets.
     <Target Name="BeforeBuild">
     -->
     <Target Name="AfterBuild">
+<!--        <Copy SourceFiles="@(CopyItems)" DestinationFolder="$(AppData)\Autodesk\Revit\Addins\2019" />-->
+<!--        <Copy SourceFiles="@(CopyItems)" DestinationFolder="$(AppData)\Autodesk\Revit\Addins\2020" />-->
         <Copy SourceFiles="@(CopyItems)" DestinationFolder="$(AppData)\Autodesk\Revit\Addins\2021" />
     </Target>
 
