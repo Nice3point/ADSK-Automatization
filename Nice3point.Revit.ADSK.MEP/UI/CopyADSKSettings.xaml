@@ -8,19 +8,51 @@
     WindowStartupLocation="CenterScreen"
     Icon="../Resources/WindowSettings.ico"
     Title="Настройки копирования параметров"
-    MinHeight="160"
-    MinWidth="260"
+    MinHeight="300"
+    MinWidth="500"
     Height="300"
-    Width="400"
-    Style="{StaticResource SettingsWindowStyle}">
+    Width="500"
+    Style="{DynamicResource SettingsWindowStyle}">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="../Styles/SettingsWindowStyleDictionary.xaml"/>
+                <ResourceDictionary Source="../Styles/SettingsStyleDictionary.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    <DockPanel>
+    <DockPanel
+        LastChildFill="True">
+        <DockPanel
+            DockPanel.Dock="Top"
+            Height="50"
+            LastChildFill="True">
+            <TextBlock
+                DockPanel.Dock="Left"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                TextAlignment="Center"
+                TextWrapping="WrapWithOverflow"
+                Margin="10"
+                Text="Профиль" />
+            <Button 
+                DockPanel.Dock="Right"
+                Style="{StaticResource SettingsStyleButton}"
+                Content="Загрузить">
+            </Button>
+            <Button 
+                DockPanel.Dock="Right"
+                Style="{StaticResource SettingsStyleButton}"
+                Padding="10"
+                Content="Сохранить">
+            </Button>
+            <TextBlock
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                Margin="10"
+                Foreground="#6A3C3C3C"
+                Text="C:\Users\nice3\.RevitAddins\CopyADSKSettings.json"
+                TextTrimming="CharacterEllipsis"/>
+        </DockPanel>
         <StatusBar
             DockPanel.Dock="Bottom"
             Height="24">
@@ -29,15 +61,18 @@
                 <ResizeGrip Opacity="0.75" />
             </StatusBarItem>
         </StatusBar>
-        <TextBox
-            Text="Hello, world!"
-            FontSize="13"
-            BorderThickness="0"
-            AcceptsReturn="True"
-            Padding="2"
-            Background="Transparent"
-            ScrollViewer.CanContentScroll="True"
-            ScrollViewer.VerticalScrollBarVisibility="Auto"
-            ScrollViewer.HorizontalScrollBarVisibility="Auto" />
+        <Separator
+            DockPanel.Dock="Top"
+            Background="Black"/>
+        <Grid>
+            <ListBox
+                BorderBrush="White">
+                <ListBox.Items>
+                    <ListBoxItem>В_ОВ_Воздуховоды</ListBoxItem>
+                    <ListBoxItem>В_ОВ_Трубопроводы</ListBoxItem>
+                    <ListBoxItem>В_ОВ_Изоляция трубопроводов</ListBoxItem>
+                </ListBox.Items>
+            </ListBox>
+        </Grid>
     </DockPanel>
 </Window>

@@ -63,7 +63,7 @@
         <Compile Include="Commands\CreateSpaces.cs" />
         <Compile Include="Commands\SettingsCopyADSK.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
-        <Compile Include="Styles\SettingsWindowStyleDictionary.cs" />
+        <Compile Include="Styles\SettingsStyleDictionary.cs" />
         <Compile Include="UI\CopyADSKSettings.xaml.cs">
           <DependentUpon>CopyADSKSettings.xaml</DependentUpon>
         </Compile>
@@ -97,7 +97,7 @@
       <Folder Include="bin\Debug" />
     </ItemGroup>
     <ItemGroup>
-      <Page Include="Styles\SettingsWindowStyleDictionary.xaml" />
+      <Page Include="Styles\SettingsStyleDictionary.xaml" />
       <Page Include="UI\CopyADSKSettings.xaml" />
     </ItemGroup>
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
