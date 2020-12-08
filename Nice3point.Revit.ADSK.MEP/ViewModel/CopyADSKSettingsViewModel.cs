@@ -1,8 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Windows.Controls;
+using Autodesk.Revit.DB;
+using Autodesk.Revit.UI;
 using Nice3point.Revit.ADSK.MEP.Annotations;
 using Nice3point.Revit.ADSK.MEP.Model;
 
@@ -16,13 +20,13 @@ namespace Nice3point.Revit.ADSK.MEP.ViewModel
         public readonly string ConfigurationPath = Path.Combine(ConfigurationDirectory, "config.ini");
         private string _copyAdskSettingsPath = Path.Combine(ConfigurationDirectory, "CopyADSKSettings.json");
 
-        public ObservableCollection<string> SpecificationNames{ get; set; }
-
         public SettingsCopyAdskViewModel()
         {
             SpecificationNames = new ObservableCollection<string>();
             Model = new SettingsCopyAdskModel(this);
         }
+
+        public ObservableCollection<string> SpecificationNames { get; set; }
 
         private SettingsCopyAdskModel Model { get; }
 
@@ -50,6 +54,24 @@ namespace Nice3point.Revit.ADSK.MEP.ViewModel
             {
                 Model.UpdateConfiguration();
                 Model.LoadSpecificationNames();
+            }
+        }
+
+        public void DeleteSpecifications(IEnumerable<string> selectedItems)
+        {
+            Model.DeleteSpecifications(selectedItems);
+        }
+
+        public List<string> GetProjectSchedules(Document uiDocDocument)
+        {
+            return Model.GetProjectSchedules(uiDocDocument);
+        }
+
+        public void AddSchedules(List<string> selectedItems)
+        {
+            foreach (var item in selectedItems)
+            {
+                SpecificationNames.Add(item);
             }
         }
 

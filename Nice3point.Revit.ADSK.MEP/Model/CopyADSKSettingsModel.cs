@@ -1,5 +1,8 @@
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
+using Autodesk.Revit.DB;
 using IniParser;
 using Newtonsoft.Json;
 using Nice3point.Revit.ADSK.MEP.ViewModel;
@@ -88,6 +91,27 @@ namespace Nice3point.Revit.ADSK.MEP.Model
             };
             var json = JsonConvert.SerializeObject(ViewModel.SpecificationNames);
             File.WriteAllText($@"{ViewModel.CopyAdskSettingsPath}", json);
+        }
+
+        public void DeleteSpecifications(IEnumerable<string> selectedItems)
+        {
+            foreach (var item in selectedItems)
+            {
+                ViewModel.SpecificationNames.Remove(item);
+            }
+        }
+
+        public List<string> GetProjectSchedules(Document document)
+        {
+            return new FilteredElementCollector(document)
+                .OfClass(typeof(ViewSchedule))
+                .Cast<ViewSchedule>()
+                .Where(s => !s.IsTemplate)
+                .Where(s => !s.IsTitleblockRevisionSchedule)
+                .Select(s => s.Name)
+                .Where(s => !ViewModel.SpecificationNames.Contains(s))
+                .OrderBy(s => s)
+                .ToList();
         }
     }
 }

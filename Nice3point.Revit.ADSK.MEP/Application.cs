@@ -44,7 +44,7 @@ namespace Nice3point.Revit.ADSK.MEP
                     "pack://application:,,,/Nice3point.Revit.ADSK.MEP;component/Resources/CopyADSK32.png"))
             };
             var buttonSettingsCopyAdsk = new PushButtonData("SettingsCopyADSK", "Настройка\nкопирования",
-                Assembly.GetExecutingAssembly().Location, typeof(SettingsCopyAdsk).FullName)
+                Assembly.GetExecutingAssembly().Location, typeof(CopyAdskSettings).FullName)
             {
                 ToolTip = "Настройка параметров копирования",
                 Image = new BitmapImage(new Uri(

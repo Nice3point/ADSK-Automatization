@@ -69,15 +69,19 @@
         <Compile Include="Commands\CreateDuctSystemViews.cs" />
         <Compile Include="Commands\CreatePipeSystemViews.cs" />
         <Compile Include="Commands\CreateSpaces.cs" />
-        <Compile Include="Commands\SettingsCopyADSK.cs" />
-        <Compile Include="Model\SettingsCopyADSKModel.cs" />
+        <Compile Include="Commands\CopyADSKSettings.cs" />
+        <Compile Include="Model\CopyADSKSettingsModel.cs" />
         <Compile Include="Properties\Annotations.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
         <Compile Include="Styles\SettingsStyleDictionary.cs" />
-        <Compile Include="UI\CopyADSKSettings.xaml.cs">
-          <DependentUpon>CopyADSKSettings.xaml</DependentUpon>
+        <Compile Include="UI\CopyADSKPickSchedulesView.xaml.cs">
+          <DependentUpon>CopyADSKPickSchedulesView.xaml</DependentUpon>
         </Compile>
-        <Compile Include="ViewModel\SettingsCopyADSKViewModel.cs" />
+        <Compile Include="UI\CopyADSKSettingsView.xaml.cs">
+          <DependentUpon>CopyADSKSettingsView.xaml</DependentUpon>
+        </Compile>
+        <Compile Include="ViewModel\CopyADSKPickScheduleViewModel.cs" />
+        <Compile Include="ViewModel\CopyADSKSettingsViewModel.cs" />
     </ItemGroup>
     <ItemGroup>
         <Content Include="Nice3point.Revit.ADSK.MEP.addin">
@@ -106,11 +110,11 @@
     </ItemGroup>
     <ItemGroup>
       <Folder Include="bin\Debug" />
-      <Folder Include="Helpers" />
     </ItemGroup>
     <ItemGroup>
       <Page Include="Styles\SettingsStyleDictionary.xaml" />
-      <Page Include="UI\CopyADSKSettings.xaml" />
+      <Page Include="UI\CopyADSKPickSchedulesView.xaml" />
+      <Page Include="UI\CopyADSKSettingsView.xaml" />
     </ItemGroup>
     <ItemGroup>
       <None Include="packages.config" />
