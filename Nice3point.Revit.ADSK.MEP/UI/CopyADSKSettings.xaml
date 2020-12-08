@@ -37,20 +37,22 @@
             <Button 
                 DockPanel.Dock="Right"
                 Style="{StaticResource SettingsStyleButton}"
-                Content="Загрузить">
+                Content="Загрузить"
+                Click="ButtonLoadingConfiguration_OnClick">
             </Button>
             <Button 
                 DockPanel.Dock="Right"
                 Style="{StaticResource SettingsStyleButton}"
                 Padding="10"
-                Content="Сохранить">
+                Content="Сохранить"
+                Click="ButtonSaveConfiguration_OnClick">
             </Button>
             <TextBlock
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
                 Margin="10"
                 Foreground="#6A3C3C3C"
-                Text="C:\Users\nice3\.RevitAddins\CopyADSKSettings.json"
+                Text="{Binding CopyAdskSettingsPath}"
                 TextTrimming="CharacterEllipsis"/>
         </DockPanel>
         <StatusBar
@@ -66,12 +68,8 @@
             Background="Black"/>
         <Grid>
             <ListBox
-                BorderBrush="White">
-                <ListBox.Items>
-                    <ListBoxItem>В_ОВ_Воздуховоды</ListBoxItem>
-                    <ListBoxItem>В_ОВ_Трубопроводы</ListBoxItem>
-                    <ListBoxItem>В_ОВ_Изоляция трубопроводов</ListBoxItem>
-                </ListBox.Items>
+                BorderBrush="White"
+                ItemsSource="{Binding SpecificationNames, UpdateSourceTrigger=PropertyChanged}">
             </ListBox>
         </Grid>
     </DockPanel>

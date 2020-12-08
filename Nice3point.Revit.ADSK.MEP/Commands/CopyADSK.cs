@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Plumbing;
 using Autodesk.Revit.UI;
+using Nice3point.Revit.ADSK.MEP.ViewModel;
 
 namespace Nice3point.Revit.ADSK.MEP.Commands
 {
@@ -15,33 +17,8 @@ namespace Nice3point.Revit.ADSK.MEP.Commands
         {
             var uiDoc = commandData.Application.ActiveUIDocument;
             var doc = uiDoc.Document;
-            var viewSchedules = new List<string>
-            {
-                "В_ОВ_Гибкие воздуховоды",
-                "В_ОВ_Изоляция воздуховодов",
-                "В_ОВ_Круглые воздуховоды",
-                "В_ОВ_Прямоугольные воздуховоды",
-                "В_ОВ_Фасонные детали воздуховодов",
-                "В_ОВ_Гибкие трубы",
-                "В_ОВ_Изоляция труб",
-                "В_ОВ_Трубопроводы",
-                "В_ВК_Гибкие трубы",
-                "В_ВК_Изоляция труб",
-                "В_ВК_Трубопроводы",
-                "В_ТМ_Гибкие воздуховоды",
-                "В_ТМ_Изоляция воздуховодов",
-                "В_ТМ_Круглые воздуховоды",
-                "В_ТМ_Прямоугольные воздуховоды",
-                "В_ТМ_Фасонные детали воздуховодов",
-                "В_ТМ_Гибкие трубы",
-                "В_ТМ_Изоляция труб",
-                "В_ТМ_Трубопроводы",
-                "В_ТМ_Технико-экономические показатели",
-                "В_ГСВ_Гибкие трубы",
-                "В_ГСВ_Изоляция труб",
-                "В_ГСВ_Трубопроводы",
-                "В_ГСВ_Технико-экономические показатели"
-            };
+            var viewModel = new SettingsCopyAdskViewModel();
+            var viewSchedules = viewModel.SpecificationNames;
             foreach (var curViewSchedule in viewSchedules.Select(vSchedule => new FilteredElementCollector(doc)
                 .OfClass(typeof(ViewSchedule))
                 .FirstOrDefault(vs => vs.Name.Equals(vSchedule))).OfType<ViewSchedule>())
