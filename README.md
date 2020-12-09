@@ -26,3 +26,4 @@
 
 #### [Установка](https://github.com/Nice3point/ADSK-Automatization/wiki/%D0%A3%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0)
 #### [Описание команд](https://knowledge.autodesk.com/ru/support/revit-products/learn-explore/caas/simplecontent/content/-D1-80-D1-83-D0-BA-D0-BE-D0-B2-D0-BE-D0-B4-D1-81-D1-82-D0-B2-D0-BE--D0-BA--D1-88-D0-B0-D0-B1.html)
+#### [Группа в Telegram](https://t.me/revitmepru)
