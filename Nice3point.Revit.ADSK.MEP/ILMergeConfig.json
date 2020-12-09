@@ -1,0 +1,5 @@
+{
+  "General": {
+    "OutputFile": "$(TargetDir)\\Merged assembly\\$(TargetFileName)"
+  }
+}
