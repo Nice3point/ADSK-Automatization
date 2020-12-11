@@ -87,7 +87,10 @@ namespace Nice3point.Revit.ADSK.MEP.Commands
 
         private static string SelectFolder()
         {
-            var fBrowser = new FolderBrowserDialog {RootFolder = Environment.SpecialFolder.MyComputer};
+            var fBrowser = new FolderBrowserDialog
+            {
+                RootFolder = Environment.SpecialFolder.MyComputer
+            };
             var resultDg = fBrowser.ShowDialog();
             return resultDg == DialogResult.OK ? fBrowser.SelectedPath : "";
         }

@@ -1,3 +1,4 @@
+using System.IO;
 using System.Linq;
 using System.Windows;
 using Autodesk.Revit.UI;
@@ -34,6 +35,7 @@ namespace Nice3point.Revit.ADSK.MEP.UI
         {
             var saveConfigurationDialog = new SaveFileDialog
             {
+                FileName = Path.GetFileName($@"{ViewModel.CopyAdskSettingsPath}"),
                 InitialDirectory = $@"{ViewModel.CopyAdskSettingsPath}",
                 Filter = "Json files (*.json)|*.json"
             };

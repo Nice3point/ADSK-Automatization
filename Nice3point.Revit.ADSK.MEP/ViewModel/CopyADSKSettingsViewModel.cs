@@ -4,9 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
-using System.Windows.Controls;
 using Autodesk.Revit.DB;
-using Autodesk.Revit.UI;
 using Nice3point.Revit.ADSK.MEP.Annotations;
 using Nice3point.Revit.ADSK.MEP.Model;
 
@@ -14,11 +12,8 @@ namespace Nice3point.Revit.ADSK.MEP.ViewModel
 {
     public class SettingsCopyAdskViewModel : INotifyPropertyChanged
     {
-        public static readonly string ConfigurationDirectory = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), @".RevitAddins");
-
-        public readonly string ConfigurationPath = Path.Combine(ConfigurationDirectory, "config.ini");
-        private string _copyAdskSettingsPath = Path.Combine(ConfigurationDirectory, "CopyADSKSettings.json");
+        
+        private string _copyAdskSettingsPath = Path.Combine(Application.ConfigurationDirectory, "CopyADSKSettings.json");
 
         public SettingsCopyAdskViewModel()
         {

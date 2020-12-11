@@ -1,16 +1,25 @@
 ﻿using System;
+using System.IO;
 using System.Reflection;
 using System.Windows.Media.Imaging;
 using Autodesk.Revit.UI;
+using IniParser;
+using IniParser.Model;
 using Nice3point.Revit.ADSK.MEP.Commands;
 
 namespace Nice3point.Revit.ADSK.MEP
 {
     public class Application : IExternalApplication
     {
+        public static readonly string ConfigurationDirectory = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), @".RevitAddins");
+
+        public static readonly string ConfigurationPath = Path.Combine(ConfigurationDirectory, "config.ini");
+
         public Result OnStartup(UIControlledApplication application)
         {
-            var panel = application.CreateRibbonPanel("Шаблон ADSK");
+            CheckConfiguration();
+            var panel = CreateRibbonTab(application);
 
             if (panel.AddItem(new PushButtonData("AutoNumerate", "Автонумерация\nв спецификациях",
                     Assembly.GetExecutingAssembly().Location, typeof(AutoNumerate).FullName)) is PushButton
@@ -98,6 +107,37 @@ namespace Nice3point.Revit.ADSK.MEP
             }
 
             return Result.Succeeded;
+        }
+
+        private static RibbonPanel CreateRibbonTab(UIControlledApplication application)
+        {
+            var iniParser = new FileIniDataParser();
+            
+            var iniData = iniParser.ReadFile($@"{ConfigurationPath}");
+            var ribbonTabName = "";
+            if (iniData["Application"].ContainsKey("Ribbon tab name"))
+            {
+                ribbonTabName = iniData["Application"]["Ribbon tab name"];
+            }
+            else
+            {
+                iniData["Application"]["Ribbon tab name"] = "";
+                iniParser.WriteFile($@"{ConfigurationPath}", iniData);
+            }
+
+            if (ribbonTabName.Equals(""))
+            {
+                return application.CreateRibbonPanel("Шаблон ADSK");
+            }
+            application.CreateRibbonTab(ribbonTabName);
+            return application.CreateRibbonPanel(ribbonTabName, "Шаблон ADSK");
+        }
+
+        public static void CheckConfiguration()
+        {
+            if (File.Exists($@"{ConfigurationPath}")) return;
+            Directory.CreateDirectory(ConfigurationDirectory);
+            File.Create($@"{ConfigurationPath}").Close();
         }
 
         public Result OnShutdown(UIControlledApplication application)

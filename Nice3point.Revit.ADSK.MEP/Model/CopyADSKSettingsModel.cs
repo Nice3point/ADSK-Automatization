@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Autodesk.Revit.DB;
 using IniParser;
+using IniParser.Model;
 using Newtonsoft.Json;
 using Nice3point.Revit.ADSK.MEP.ViewModel;
 
@@ -11,9 +12,14 @@ namespace Nice3point.Revit.ADSK.MEP.Model
 {
     public class SettingsCopyAdskModel
     {
+        private readonly FileIniDataParser _iniParser;
+        private readonly IniData _iniData;
         public SettingsCopyAdskModel(SettingsCopyAdskViewModel viewModel)
         {
             ViewModel = viewModel;
+            Application.CheckConfiguration();
+            _iniParser = new FileIniDataParser();
+            _iniData = _iniParser.ReadFile($@"{Application.ConfigurationPath}");
             LoadConfiguration();
             LoadSpecificationNames();
         }
@@ -22,26 +28,18 @@ namespace Nice3point.Revit.ADSK.MEP.Model
 
         private void LoadConfiguration()
         {
-            var iniParser = new FileIniDataParser();
-            if (!File.Exists($@"{ViewModel.ConfigurationPath}"))
+            
+            if (!_iniData["CopyAdsk"].ContainsKey("Profile file"))
             {
-                Directory.CreateDirectory(SettingsCopyAdskViewModel.ConfigurationDirectory);
-                File.Create($@"{ViewModel.ConfigurationPath}").Close();
                 IniWriteKey();
             }
-            else
-            {
-                var iniData = iniParser.ReadFile($@"{ViewModel.ConfigurationPath}");
-                ViewModel.CopyAdskSettingsPath = iniData["CopyAdsk"]["Profile file"];
-            }
+            ViewModel.CopyAdskSettingsPath = _iniData["CopyAdsk"]["Profile file"];
         }
 
         private void IniWriteKey()
         {
-            var iniParser = new FileIniDataParser();
-            var iniData = iniParser.ReadFile($@"{ViewModel.ConfigurationPath}");
-            iniData["CopyAdsk"]["Profile file"] = $@"{ViewModel.CopyAdskSettingsPath}";
-            iniParser.WriteFile($@"{ViewModel.ConfigurationPath}", iniData);
+            _iniData["CopyAdsk"]["Profile file"] = $@"{ViewModel.CopyAdskSettingsPath}";
+            _iniParser.WriteFile($@"{Application.ConfigurationPath}", _iniData);
         }
 
         public void UpdateConfiguration()
