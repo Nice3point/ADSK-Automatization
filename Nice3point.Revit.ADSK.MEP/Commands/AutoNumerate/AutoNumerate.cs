@@ -4,7 +4,7 @@ using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 
-namespace Nice3point.Revit.ADSK.MEP.Commands
+namespace Nice3point.Revit.ADSK.MEP.Commands.AutoNumerate
 {
     [Transaction(TransactionMode.Manual)]
     public class AutoNumerate : IExternalCommand
@@ -47,7 +47,7 @@ namespace Nice3point.Revit.ADSK.MEP.Commands
                 tGroup.Start();
                 for (var rInd = 0; rInd < tableSectionData.NumberOfRows; rInd++)
                 {
-                    var elementsOnRow = CommonFunctions.GetElementsOnRow(doc, locVs, rInd);
+                    var elementsOnRow = RevitFunctions.GetElementsOnRow(doc, locVs, rInd);
                     if (null == elementsOnRow) continue;
                     if (sub)
                         startIndex = SetNum(doc, startIndex, elementsOnRow, true);

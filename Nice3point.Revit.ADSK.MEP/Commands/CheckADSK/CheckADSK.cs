@@ -8,7 +8,7 @@ using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 
-namespace Nice3point.Revit.ADSK.MEP.Commands
+namespace Nice3point.Revit.ADSK.MEP.Commands.CheckADSK
 {
     [Transaction(TransactionMode.ReadOnly)]
     public class CheckAdsk : IExternalCommand

@@ -1,12 +1,10 @@
-using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
-namespace Nice3point.Revit.ADSK.MEP.ViewModel
+namespace Nice3point.Revit.ADSK.MEP.Commands.CopyADSK
 {
     public class CopyAdskPickScheduleViewModel
     {
-        public List<string> ProjectUnusedSpecification{ get; set; }
+        public List<string> ProjectUnusedSpecification{ get; }
 
         public CopyAdskPickScheduleViewModel(List<string> schedules)
         {

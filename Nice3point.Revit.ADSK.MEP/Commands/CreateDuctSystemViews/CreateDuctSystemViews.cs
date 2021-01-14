@@ -5,7 +5,7 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.Exceptions;
 using Autodesk.Revit.UI;
 
-namespace Nice3point.Revit.ADSK.MEP.Commands
+namespace Nice3point.Revit.ADSK.MEP.Commands.CreateDuctSystemViews
 {
     [Transaction(TransactionMode.Manual)]
     public class CreateDuctSystemViews : IExternalCommand
@@ -27,7 +27,7 @@ namespace Nice3point.Revit.ADSK.MEP.Commands
                             .OfCategory(cat)
                             .WhereElementIsNotElementType()
                             .ToList();
-                        if (elementsByCat.Count > 0) CommonFunctions.CopySystemNameValue(doc, elementsByCat);
+                        if (elementsByCat.Count > 0) RevitFunctions.CopySystemNameValue(doc, elementsByCat);
                     }
 
                     trg.Assimilate();

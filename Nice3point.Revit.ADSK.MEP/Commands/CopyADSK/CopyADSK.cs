@@ -5,9 +5,8 @@ using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Plumbing;
 using Autodesk.Revit.UI;
-using Nice3point.Revit.ADSK.MEP.ViewModel;
 
-namespace Nice3point.Revit.ADSK.MEP.Commands
+namespace Nice3point.Revit.ADSK.MEP.Commands.CopyADSK
 {
     [Transaction(TransactionMode.Manual)]
     public class CopyAdsk : IExternalCommand
@@ -16,17 +15,25 @@ namespace Nice3point.Revit.ADSK.MEP.Commands
         {
             var uiDoc = commandData.Application.ActiveUIDocument;
             var doc = uiDoc.Document;
-            var viewModel = new SettingsCopyAdskViewModel();
-            var viewSchedules = viewModel.SpecificationNames;
-            foreach (var curViewSchedule in viewSchedules.Select(vSchedule => new FilteredElementCollector(doc)
+            var settings = new CopyAdskSettings();
+            settings.CreateInstance(commandData);
+            var viewModel = new CopyAdskSettingsViewModel(settings);
+            var schedules = viewModel.Schedules    
+                .Select(vSchedule => new FilteredElementCollector(doc)
                 .OfClass(typeof(ViewSchedule))
-                .FirstOrDefault(vs => vs.Name.Equals(vSchedule))).OfType<ViewSchedule>())
+                .FirstOrDefault(vs => vs.Name.Equals(vSchedule))).OfType<ViewSchedule>();
+            foreach (var view in schedules)
             {
-                uiDoc.ActiveView = curViewSchedule;
-                CopyToAdsk(doc, curViewSchedule);
-                foreach (var uiView in uiDoc.GetOpenUIViews())
-                    if (curViewSchedule.Id == uiView.ViewId)
-                        uiView.Close();
+                uiDoc.ActiveView = view;
+                CopyToAdsk(doc, view);
+                var openViews = uiDoc.GetOpenUIViews();
+                var countOpenView = uiDoc.GetOpenUIViews().Count;
+                foreach (var uiView in openViews)
+                {
+                    if (countOpenView==1) break;
+                    if (view.Id == uiView.ViewId) uiView.Close();
+                    countOpenView -= 1;
+                }
             }
 
             return Result.Succeeded;
@@ -77,7 +84,7 @@ namespace Nice3point.Revit.ADSK.MEP.Commands
             tGroup.Start();
             for (var rInd = 0; rInd < tsDada.NumberOfRows; rInd++)
             {
-                var elementsOnRow = CommonFunctions.GetElementsOnRow(doc, vs, rInd);
+                var elementsOnRow = RevitFunctions.GetElementsOnRow(doc, vs, rInd);
                 if (null == elementsOnRow) continue;
                 string dataValue;
                 string commentValue;

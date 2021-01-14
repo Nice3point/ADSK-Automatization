@@ -1,10 +1,7 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
-using Autodesk.Revit.UI;
-using Nice3point.Revit.ADSK.MEP.ViewModel;
 
-namespace Nice3point.Revit.ADSK.MEP.UI
+namespace Nice3point.Revit.ADSK.MEP.Commands.CopyADSK
 {
     public partial class CopyAdskPickSchedulesView
     {

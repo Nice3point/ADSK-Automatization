@@ -9,13 +9,13 @@ using Autodesk.Revit.DB.Mechanical;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
 
-namespace Nice3point.Revit.ADSK.MEP.Commands
+namespace Nice3point.Revit.ADSK.MEP.Commands.CreateSpaces
 {
     [Transaction(TransactionMode.Manual)]
     public class CreateSpaces : IExternalCommand
     {
         private static ICollection<ElementId> _warnElements = new List<ElementId>();
-        private readonly Stopwatch _sTimer = new Stopwatch();
+        private readonly Stopwatch _sTimer = new();
         private Document _doc;
         private List<LevelsData> _levelsDataCreation;
         private Document _linkedDoc;

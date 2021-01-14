@@ -5,13 +5,15 @@ using Autodesk.Revit.DB;
 
 namespace Nice3point.Revit.ADSK.MEP.Commands
 {
-    public static class CommonFunctions
+    public static class RevitFunctions
     {
         public static List<Element> GetElementsOnRow(Document doc, ViewSchedule vs, int rowNumber)
         {
             var tableData = vs.GetTableData();
             var tableSectionData = tableData.GetSectionData(SectionType.Body);
-            var elemIds = new FilteredElementCollector(doc, vs.Id).ToElementIds().ToList();
+            var elemIds = new FilteredElementCollector(doc, vs.Id)
+                .ToElementIds()
+                .ToList();
 
             using var t = new Transaction(doc, "Empty");
             t.Start();
@@ -30,7 +32,9 @@ namespace Nice3point.Revit.ADSK.MEP.Commands
                 st.Commit();
             }
 
-            var remainingElementsIds = new FilteredElementCollector(doc, vs.Id).ToElementIds().ToList();
+            var remainingElementsIds = new FilteredElementCollector(doc, vs.Id)
+                .ToElementIds()
+                .ToList();
             t.RollBack();
 
             return elemIds
