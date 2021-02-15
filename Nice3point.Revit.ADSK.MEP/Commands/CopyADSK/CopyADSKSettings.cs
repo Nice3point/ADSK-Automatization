@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 
 namespace Nice3point.Revit.ADSK.MEP.Commands.CopyADSK
 {
-    [Transaction(TransactionMode.ReadOnly)] 
+    [Transaction(TransactionMode.ReadOnly)]
     public class CopyAdskSettings : IExternalCommand
     {
         private Document _doc;
@@ -33,46 +33,78 @@ namespace Nice3point.Revit.ADSK.MEP.Commands.CopyADSK
             _viewModel = new CopyAdskSettingsViewModel(this);
         }
 
-        public ObservableCollection<string> LoadSchedules(string path)
+        public static ObservableCollection<Schedule> LoadSchedules(string path)
         {
             var json = File.ReadAllText(path);
-            return JsonConvert.DeserializeObject<ObservableCollection<string>>(json);
+            return JsonConvert.DeserializeObject<ObservableCollection<Schedule>>(json);
         }
-        public void SaveSchedules(string path, ObservableCollection<string> schedules)
+
+        public static void SaveSchedules(string path, ObservableCollection<Schedule> schedules)
         {
             using var file = File.CreateText(path);
-            var serializer = new JsonSerializer();
+            var serializer = new JsonSerializer
+                {Formatting = Formatting.Indented, DefaultValueHandling = DefaultValueHandling.Ignore};
             serializer.Serialize(file, schedules);
         }
-        public ObservableCollection<string> CreateDefaultSchedules(string path)
-        {
-            var schedules = new ObservableCollection<string>
-            {
-                "В_ОВ_Гибкие воздуховоды",
-                "В_ОВ_Изоляция воздуховодов",
-                "В_ОВ_Круглые воздуховоды",
-                "В_ОВ_Прямоугольные воздуховоды",
-                "В_ОВ_Фасонные детали воздуховодов",
-                "В_ОВ_Гибкие трубы",
-                "В_ОВ_Изоляция труб",
-                "В_ОВ_Трубопроводы",
-                "В_ВК_Гибкие трубы",
-                "В_ВК_Изоляция труб",
-                "В_ВК_Трубопроводы"
-            };
 
-            File.WriteAllText(path, JsonConvert.SerializeObject(schedules));
+        public static ObservableCollection<Schedule> CreateDefaultSchedules(string path)
+        {
+            const int defaultColumn = 2;
+            const double defaultReserve = 1;
+            const string defaultReserveParameter = "Запас";
+            var schedules = new ObservableCollection<Schedule>
+            {
+                new("В_ОВ_Гибкие воздуховоды",
+                    new Operation(Command.CopyName, defaultColumn),
+                    new Operation(Command.CopyLength, defaultReserve, defaultReserveParameter)),
+                new("В_ОВ_Изоляция воздуховодов",
+                    new Operation(Command.CopyName, defaultColumn),
+                    new Operation(Command.CopyArea, defaultReserve, defaultReserveParameter)),
+                new("В_ОВ_Круглые воздуховоды",
+                    new Operation(Command.CopyName, defaultColumn),
+                    new Operation(Command.CopyLength, defaultReserve, defaultReserveParameter),
+                    new Operation(Command.CopyComment, 8)),
+                new("В_ОВ_Прямоугольные воздуховоды",
+                    new Operation(Command.CopyName, defaultColumn),
+                    new Operation(Command.CopyLength, defaultReserve, defaultReserveParameter),
+                    new Operation(Command.CopyComment, 8)),
+                new("В_ОВ_Фасонные детали воздуховодов",
+                    new Operation(Command.CopyName, defaultColumn)),
+                new("В_ОВ_Гибкие трубы",
+                    new Operation(Command.CopyName, defaultColumn),
+                    new Operation(Command.CopyLength, defaultReserve, defaultReserveParameter)),
+                new("В_ОВ_Изоляция труб",
+                    new Operation(Command.CopyName, defaultColumn),
+                    new Operation(Command.CopyVolume, defaultReserve, defaultReserveParameter)),
+                new("В_ОВ_Трубопроводы",
+                    new Operation(Command.CopyName, defaultColumn),
+                    new Operation(Command.CopyLength, defaultReserve, defaultReserveParameter)),
+                new("В_ВК_Гибкие трубы",
+                    new Operation(Command.CopyName, defaultColumn),
+                    new Operation(Command.CopyCount)),
+                new("В_ВК_Изоляция труб",
+                    new Operation(Command.CopyName, defaultColumn),
+                    new Operation(Command.CopyVolume)),
+                new("В_ВК_Трубопроводы",
+                    new Operation(Command.CopyName, defaultColumn),
+                    new Operation(Command.CopyLength)),
+                new("В_ТМ_Технико-экономические показатели",
+                    new Operation(Command.CopyMass, defaultColumn)),
+                new("В_ТМ_Трубопроводы",
+                    new Operation(Command.CopyTemperature, "Температура трубопроводов"))
+            };
+            SaveSchedules(path, schedules);
             return schedules;
         }
 
         public IEnumerable<string> GetProjectSchedules()
         {
             return new FilteredElementCollector(_doc)
-                .OfClass(typeof(ViewSchedule))
-                .Cast<ViewSchedule>()
-                .Where(s => !s.IsTemplate)
-                .Where(s => !s.IsTitleblockRevisionSchedule)
-                .Select(s => s.Name);
+                   .OfClass(typeof(ViewSchedule))
+                   .Cast<ViewSchedule>()
+                   .Where(s => !s.IsTemplate)
+                   .Where(s => !s.IsTitleblockRevisionSchedule)
+                   .Select(s => s.Name);
         }
     }
 }

@@ -56,6 +56,7 @@
         <Reference Include="System" />
         <Reference Include="System.Core" />
         <Reference Include="System.Data" />
+        <Reference Include="System.Runtime.Serialization" />
         <Reference Include="System.Windows.Forms" />
         <Reference Include="System.Xaml" />
         <Reference Include="System.Xml" />
@@ -66,6 +67,8 @@
         <Compile Include="Commands\AdskGuid.cs" />
         <Compile Include="Commands\AutoNumerate\AutoNumerate.cs" />
         <Compile Include="Commands\CheckADSK\CheckADSK.cs" />
+        <Compile Include="Commands\CopyADSK\Command.cs" />
+        <Compile Include="Commands\CopyADSK\Schedule.cs" />
         <Compile Include="Commands\RelayCommand.cs" />
         <Compile Include="Commands\RevitFunctions.cs" />
         <Compile Include="Commands\CopyADSK\CopyADSK.cs" />

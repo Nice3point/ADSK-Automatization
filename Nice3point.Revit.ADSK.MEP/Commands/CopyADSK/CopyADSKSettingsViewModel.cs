@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -24,21 +23,22 @@ namespace Nice3point.Revit.ADSK.MEP.Commands.CopyADSK
         public CopyAdskSettingsViewModel(CopyAdskSettings model)
         {
             _model = model;
-            Schedules = new ObservableCollection<string>();
+            Schedules = new ObservableCollection<Schedule>();
 
             Configuration.TryReadKey(nameof(CopyAdsk), "Profile path", out var path);
-            if (string.IsNullOrEmpty(path))
+            if (string.IsNullOrEmpty(path) || !File.Exists(path))
             {
-                Schedules = _model.CreateDefaultSchedules(SchedulesPath);
+                Schedules = CopyAdskSettings.CreateDefaultSchedules(SchedulesPath);
+                Configuration.WriteKey(nameof(CopyAdsk), "Profile path", SchedulesPath);
             }
             else
             {
                 SchedulesPath = path;
-                Schedules = _model.LoadSchedules(SchedulesPath);
+                Schedules = CopyAdskSettings.LoadSchedules(SchedulesPath);
             }
         }
 
-        public ObservableCollection<string> Schedules { get; }
+        public ObservableCollection<Schedule> Schedules { get; }
 
         public string SchedulesPath
         {
@@ -67,7 +67,7 @@ namespace Nice3point.Revit.ADSK.MEP.Commands.CopyADSK
                     if (openFileDialog.ShowDialog() != true) return;
                     SchedulesPath = openFileDialog.FileName;
                     Schedules.Clear();
-                    foreach (var schedule in _model.LoadSchedules(SchedulesPath)) Schedules.Add(schedule);
+                    foreach (var schedule in CopyAdskSettings.LoadSchedules(SchedulesPath)) Schedules.Add(schedule);
                 });
             }
         }
@@ -86,7 +86,7 @@ namespace Nice3point.Revit.ADSK.MEP.Commands.CopyADSK
                     };
                     if (saveFileDialog.ShowDialog() != true) return;
                     SchedulesPath = saveFileDialog.FileName;
-                    _model.SaveSchedules(SchedulesPath, Schedules);
+                    CopyAdskSettings.SaveSchedules(SchedulesPath, Schedules);
                 });
             }
         }
@@ -97,14 +97,14 @@ namespace Nice3point.Revit.ADSK.MEP.Commands.CopyADSK
             {
                 return _addSchedulesOnList ??= new RelayCommand(_ =>
                 {
-                    var projectSchedules = GetProjectSchedulesByMask(Schedules);
+                    var projectSchedules = GetProjectSchedulesByMask(Schedules.Select(n=>n.Name).ToList());
                     var schedulePicker = new CopyAdskPickSchedulesView(projectSchedules);
                     schedulePicker.ShowDialog();
                     var selectedItems = schedulePicker.ListBoxSpecificationPicker
                         .SelectedItems
                         .Cast<string>()
                         .ToList();
-                    foreach (var item in selectedItems) Schedules.Add(item);
+                    foreach (var item in selectedItems) Schedules.Add(new Schedule(item));
                 });
             }
         }
@@ -116,12 +116,9 @@ namespace Nice3point.Revit.ADSK.MEP.Commands.CopyADSK
                 return _deleteSchedules ??= new RelayCommand(obj =>
                 {
                     var list = ((IList) obj)
-                        .Cast<string>()
+                        .Cast<Schedule>()
                         .ToList();
-                    foreach (var item in list)
-                    {
-                        Schedules.Remove(item);
-                    }
+                    foreach (var item in list) Schedules.Remove(item);
                 });
             }
         }
@@ -132,7 +129,7 @@ namespace Nice3point.Revit.ADSK.MEP.Commands.CopyADSK
                 .OrderBy(s => s)
                 .ToList();
         }
-        
+
         [NotifyPropertyChangedInvocator]
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {

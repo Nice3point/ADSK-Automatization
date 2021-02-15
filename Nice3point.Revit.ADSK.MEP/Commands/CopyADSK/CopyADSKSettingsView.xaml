@@ -104,6 +104,7 @@
             BorderBrush="White"
             SelectionMode="Extended"
             ItemContainerStyle="{StaticResource ListBoxItemStyle}"
-            ItemsSource="{Binding Schedules, UpdateSourceTrigger=PropertyChanged}"/>
+            ItemsSource="{Binding Schedules, UpdateSourceTrigger=PropertyChanged}"
+            DisplayMemberPath="Name"/>
     </DockPanel>
 </Window>
