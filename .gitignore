@@ -3,6 +3,4 @@
 .vs/
 obj/
 bin/
-ADSK-Automatization.sln.DotSettings.user
-/packages/
-/UnitTests/
+ADSK-Automatization.sln.*

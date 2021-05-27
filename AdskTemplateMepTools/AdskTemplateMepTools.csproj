@@ -107,6 +107,21 @@
         <Reference Include="WindowsBase" />
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="Resources\Localization\Application.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>Application.resx</DependentUpon>
+        </Compile>
+        <Compile Include="Resources\Localization\Configuration.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>Configuration.resx</DependentUpon>
+        </Compile>
+        <Compile Include="Resources\Localization\CopyAdskCommand.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>CopyAdskCommand.resx</DependentUpon>
+        </Compile>
         <Compile Include="Commands\CopyADSK\View\CopyADSKPickSchedulesView.xaml.cs">
             <DependentUpon>CopyADSKPickSchedulesView.xaml</DependentUpon>
         </Compile>
@@ -162,6 +177,20 @@
         <Page Include="Commands\CopyADSK\View\CopyADSKPickSchedulesView.xaml" />
         <Page Include="Commands\CopyADSK\View\CopyADSKSettingsView.xaml" />
         <Page Include="Styles\SettingsStyleDictionary.xaml" />
+    </ItemGroup>
+    <ItemGroup>
+      <EmbeddedResource Include="Resources\Localization\Application.resx">
+        <Generator>PublicResXFileCodeGenerator</Generator>
+        <LastGenOutput>Application.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Include="Resources\Localization\Configuration.resx">
+        <Generator>PublicResXFileCodeGenerator</Generator>
+        <LastGenOutput>Configuration.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Include="Resources\Localization\CopyAdskCommand.resx">
+        <Generator>PublicResXFileCodeGenerator</Generator>
+        <LastGenOutput>CopyAdskCommand.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <PropertyGroup>

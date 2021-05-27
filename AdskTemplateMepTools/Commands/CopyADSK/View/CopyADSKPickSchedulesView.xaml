@@ -8,7 +8,7 @@
     mc:Ignorable="d"
     d:DataContext="{d:DesignInstance viewModel:CopyAdskPickScheduleViewModel}"
     WindowStartupLocation="CenterScreen"
-    Icon="../../../../Resources/Icons/Windows/WindowSettings.ico"
+    Icon="../../../Resources/Icons/Windows/WindowSettings.ico"
     Title="Выберите спецификации для заполнения"
     MinHeight="300"
     MinWidth="500"
@@ -53,10 +53,10 @@
             DockPanel.Dock="Bottom"
             Background="Black" />
         <ListBox
-            x:Name="ListBoxSpecificationPicker"
             BorderBrush="White"
             SelectionMode="Extended"
             ItemContainerStyle="{StaticResource ListBoxItemStyle}"
+            SelectionChanged="SpecificationPicker_OnSelectionChanged"
             ItemsSource="{Binding ProjectUnusedSpecification, UpdateSourceTrigger=PropertyChanged}" />
     </DockPanel>
 </Window>

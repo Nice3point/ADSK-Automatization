@@ -29,8 +29,7 @@ namespace AdskTemplateMepTools.Commands.CopyADSK
         }
 
         [JsonConstructor]
-        public Operation(Command command, int sourceColumn, double reserveLength, string reserveParameter,
-            string parameter)
+        public Operation(Command command, int sourceColumn, double reserveLength, string reserveParameter, string parameter)
         {
             Command = command;
             SourceColumn = sourceColumn;
@@ -41,29 +40,29 @@ namespace AdskTemplateMepTools.Commands.CopyADSK
 
         [JsonConverter(typeof(StringEnumConverter))]
         [DefaultValue(-1)]
-        [JsonProperty("Operation")]
+        [JsonProperty("Название")]
         public Command Command { get; }
 
         [DefaultValue(default(int))]
-        [JsonProperty("Source column")]
+        [JsonProperty("Исходный столбец")]
         public int SourceColumn { get; }
 
         [DefaultValue(default(double))]
-        [JsonProperty("Reserve length")]
+        [JsonProperty("Коэфициент запаса")]
         public double ReserveLength { get; }
 
         [DefaultValue(default(string))]
-        [JsonProperty("Reserve parameter")]
+        [JsonProperty("Название параметра запаса")]
         public string ReserveParameter { get; }
 
         [DefaultValue(default(string))]
-        [JsonProperty("Parameter")]
+        [JsonProperty("Название параметра")]
         public string Parameter { get; }
     }
 
     public enum Command
     {
-        [EnumMember(Value = "Copy Name")] CopyName =10,
+        [EnumMember(Value = "Копирование длины")] CopyName =10,
         CopyLength,
         CopyCount,
         CopyArea,

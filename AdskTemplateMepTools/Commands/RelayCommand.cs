@@ -5,17 +5,23 @@ namespace AdskTemplateMepTools.Commands
 {
     public class RelayCommand : ICommand
     {
-        private readonly Action<object> _execute;
         private readonly bool _canExecute;
-        
-        public bool CanExecute(object parameter) => _canExecute;
-
-        public void Execute(object parameter) => _execute(parameter);
+        private readonly Action<object> _execute;
 
         public RelayCommand(Action<object> execute, bool canExecute = true)
         {
             _execute = execute;
             _canExecute = canExecute;
+        }
+
+        public bool CanExecute(object parameter)
+        {
+            return _canExecute;
+        }
+
+        public void Execute(object parameter)
+        {
+            _execute(parameter);
         }
 
         public event EventHandler CanExecuteChanged

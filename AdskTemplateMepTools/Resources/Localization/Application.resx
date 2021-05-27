@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="PanelName" xml:space="preserve">
+        <value>Автоматиция шаблона ADSK</value>
+    </data>
+    <data name="AutonumerateButtonName" xml:space="preserve">
+        <value>Нумерация</value>
+    </data>
+    <data name="AutonumerateTootip" xml:space="preserve">
+        <value>Заполнение параметра ADSK_Позиция</value>
+    </data>
+    <data name="CheckAdskButtonName" xml:space="preserve">
+        <value>Проверить&#13;семейства</value>
+    </data>
+    <data name="CheckAdskTooltip" xml:space="preserve">
+        <value>Проверка файлов семейств на соответствие требованиям по общим параметрам ADSK</value>
+    </data>
+    <data name="DuctSystemButtonName" xml:space="preserve">
+        <value>Создать системы&#13;воздуховодов</value>
+    </data>
+    <data name="DuctSystemTooltip" xml:space="preserve">
+        <value>Дублирования значений Имя системы для воздушных систем в проекте. Создание копий видов с фильтрами для данных систем</value>
+    </data>
+    <data name="CopyAdskButtonName" xml:space="preserve">
+        <value>Копировать&#13;значения</value>
+    </data>
+    <data name="CopyAdskTooltip" xml:space="preserve">
+        <value>Заполнение параметров ADSK</value>
+    </data>
+    <data name="CopyAdskSettingsButtonName" xml:space="preserve">
+        <value>Настройка&#13;копирования</value>
+    </data>
+    <data name="CopyAdskSettingsTooltip" xml:space="preserve">
+        <value>Настройка параметров копирования</value>
+    </data>
+    <data name="PipeSystemButtonName" xml:space="preserve">
+        <value>Создать системы&#13;трубопроводов</value>
+    </data>
+    <data name="PipeSystemTooltip" xml:space="preserve">
+        <value>Дублирования значений Имя системы для трубопроводных систем в проекте. Создание копий видов с фильтрами для данных систем</value>
+    </data>
+    <data name="CreateSpacesButtonName" xml:space="preserve">
+        <value>Создать&#13;пространства</value>
+    </data>
+    <data name="CreateSpacesTooltip" xml:space="preserve">
+        <value>Создание и автоматическое копирования значений параметров из архитектурных помещений в инженерные пространства. Используется экземпляр размещенной связи АР</value>
+    </data>
+</root>

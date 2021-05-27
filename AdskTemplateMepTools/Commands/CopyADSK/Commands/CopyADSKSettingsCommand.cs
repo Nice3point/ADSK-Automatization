@@ -45,7 +45,10 @@ namespace AdskTemplateMepTools.Commands.CopyADSK.Commands
         {
             using var file = File.CreateText(path);
             var serializer = new JsonSerializer
-                {Formatting = Formatting.Indented, DefaultValueHandling = DefaultValueHandling.Ignore};
+            {
+                Formatting = Formatting.Indented,
+                DefaultValueHandling = DefaultValueHandling.Ignore
+            };
             serializer.Serialize(file, schedules);
         }
 

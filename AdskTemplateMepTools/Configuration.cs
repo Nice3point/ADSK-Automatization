@@ -28,7 +28,7 @@ namespace AdskTemplateMepTools
 
         public static string GetConfigurationDirectory()
         {
-            const string addinSubFolder = ".RevitAddins";
+            var addinSubFolder = Resources.Localization.Configuration.PluginFolder;
             var userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             var addinName = Assembly.GetExecutingAssembly().GetName().Name;
             return Path.Combine(userProfile, addinSubFolder, addinName);
@@ -36,7 +36,7 @@ namespace AdskTemplateMepTools
 
         private static string GetConfigurationFilePath()
         {
-            const string fileName = "config.ini";
+            var fileName = Resources.Localization.Configuration.PluginSettingsFile;
             return Path.Combine(GetConfigurationDirectory(), fileName);
         }
 
@@ -50,17 +50,16 @@ namespace AdskTemplateMepTools
 
             _iniData = _iniParser.ReadFile(GetConfigurationFilePath());
 
-            WriteKey(nameof(Application), "Название вкладки на ленте", "", false);
-            WriteComment(nameof(Application), "Название вкладки на ленте",
-                "Если значение не задано, используется вкладка \"Надстройки\"");
-            WriteKey(nameof(AutoNumerate), "Показывать кнопку", "true", false);
-            WriteKey(nameof(CheckAdsk), "Показывать кнопку", "true", false);
-            WriteKey(nameof(CopyAdsk), "Показывать кнопку", "true", false);
-            WriteKey(nameof(CopyAdsk), "Путь к файлу настроек", "", false);
-            WriteComment(nameof(CopyAdsk), "Путь к файлу настроек", "Автогенерируемый .json файл");
-            WriteKey(nameof(CreateDuctSystemViews), "Показывать кнопку", "true", false);
-            WriteKey(nameof(CreatePipeSystemViews), "Показывать кнопку", "true", false);
-            WriteKey(nameof(CreateSpaces), "Показывать кнопку", "true", false);
+            WriteKey(nameof(Application), Resources.Localization.Configuration.TabNameKey, "", false);
+            WriteComment(nameof(Application), Resources.Localization.Configuration.TabNameKey, Resources.Localization.Configuration.TabNameComment);
+            WriteKey(nameof(AutoNumerate), Resources.Localization.Configuration.ShowButtonKey, "true", false);
+            WriteKey(nameof(CheckAdsk), Resources.Localization.Configuration.ShowButtonKey, "true", false);
+            WriteKey(nameof(CopyAdsk), Resources.Localization.Configuration.ShowButtonKey, "true", false);
+            WriteKey(nameof(CopyAdsk), Resources.Localization.CopyAdskCommand.SettingsPathKey, "", false);
+            WriteComment(nameof(CopyAdsk), Resources.Localization.CopyAdskCommand.SettingsPathKey, Resources.Localization.CopyAdskCommand.SettingsPathComment);
+            WriteKey(nameof(CreateDuctSystemViews), Resources.Localization.Configuration.ShowButtonKey, "true", false);
+            WriteKey(nameof(CreatePipeSystemViews), Resources.Localization.Configuration.ShowButtonKey, "true", false);
+            WriteKey(nameof(CreateSpaces), Resources.Localization.Configuration.ShowButtonKey, "true", false);
         }
 
         private static bool KeyExists(string section, string key)
