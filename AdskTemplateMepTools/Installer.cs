@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using WixSharp;
+using WixSharp.CommonTasks;
 
 namespace AdskTemplateMepTools
 {
@@ -31,9 +32,7 @@ namespace AdskTemplateMepTools
                         new Files(@"Addin\*.*"))
                 }
             };
-            WixSharp.CommonTasks.Tasks.RemoveDialogsBetween(project, 
-                WixSharp.Controls.NativeDialogs.WelcomeDlg,
-                WixSharp.Controls.NativeDialogs.InstallDirDlg);
+            project.RemoveDialogsBetween(WixSharp.Controls.NativeDialogs.WelcomeDlg, WixSharp.Controls.NativeDialogs.InstallDirDlg);
             project.BuildMsi();
         }
     }

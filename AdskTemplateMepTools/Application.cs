@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Reflection;
 using System.Windows.Media.Imaging;
 using AdskTemplateMepTools.Commands.AutoNumerate;
@@ -9,10 +8,6 @@ using AdskTemplateMepTools.Commands.CreateDuctSystemViews;
 using AdskTemplateMepTools.Commands.CreatePipeSystemViews;
 using AdskTemplateMepTools.Commands.CreateSpaces;
 using Autodesk.Revit.UI;
-using IniParser;
-using IniParser.Model;
-using AdskTemplateMepTools.Commands;
-using AdskTemplateMepTools.Commands.CopyADSK;
 
 namespace AdskTemplateMepTools
 {
@@ -24,7 +19,7 @@ namespace AdskTemplateMepTools
             
             var panel = CreateRibbonTab(application);
             
-            Configuration.TryReadKey(nameof(AutoNumerate), "Tab visibility",out var tabVisible);
+            Configuration.TryReadKey(nameof(AutoNumerate), "Показывать кнопку",out var tabVisible);
             if (bool.Parse(tabVisible))
             {
                 if (panel.AddItem(new PushButtonData(nameof(AutoNumerate), "Автонумерация",
@@ -39,7 +34,7 @@ namespace AdskTemplateMepTools
                 }
             }
             
-            Configuration.TryReadKey(nameof(CheckAdsk), "Tab visibility", out tabVisible);
+            Configuration.TryReadKey(nameof(CheckAdsk), "Показывать кнопку", out tabVisible);
             if (bool.Parse(tabVisible))
             {
                 if (panel.AddItem(new PushButtonData(nameof(CheckAdsk), "Проверить\nсемейства",
@@ -54,7 +49,7 @@ namespace AdskTemplateMepTools
                 }
             }
             
-            Configuration.TryReadKey(nameof(CopyAdsk), "Tab visibility", out tabVisible);
+            Configuration.TryReadKey(nameof(CopyAdsk), "Показывать кнопку", out tabVisible);
             if (bool.Parse(tabVisible))
             {
                 var buttonCopyAdsk = new PushButtonData(nameof(CopyAdsk), "Копировать\nзначения",
@@ -83,7 +78,7 @@ namespace AdskTemplateMepTools
                 }
             }
             
-            Configuration.TryReadKey(nameof(CreateDuctSystemViews), "Tab visibility", out tabVisible);
+            Configuration.TryReadKey(nameof(CreateDuctSystemViews), "Показывать кнопку", out tabVisible);
             if (bool.Parse(tabVisible))
             {
                 if (panel.AddItem(new PushButtonData(nameof(CreateDuctSystemViews),
@@ -100,7 +95,7 @@ namespace AdskTemplateMepTools
                 }
             }
             
-            Configuration.TryReadKey(nameof(CreatePipeSystemViews), "Tab visibility", out tabVisible);
+            Configuration.TryReadKey(nameof(CreatePipeSystemViews), "Показывать кнопку", out tabVisible);
             if (bool.Parse(tabVisible))
             {
                 if (panel.AddItem(new PushButtonData(nameof(CreatePipeSystemViews),
@@ -117,7 +112,7 @@ namespace AdskTemplateMepTools
                 }
             }
             
-            Configuration.TryReadKey(nameof(CreateSpaces), "Tab visibility", out tabVisible);
+            Configuration.TryReadKey(nameof(CreateSpaces), "Показывать кнопку", out tabVisible);
             if (bool.Parse(tabVisible))
             {
                 if (panel.AddItem(new PushButtonData(nameof(CreateSpaces), "Создать\nпространства",
@@ -138,7 +133,7 @@ namespace AdskTemplateMepTools
 
         private static RibbonPanel CreateRibbonTab(UIControlledApplication application)
         {
-            Configuration.TryReadKey("Application", "Ribbon tab name", out var tabName);
+            Configuration.TryReadKey("Application", "Название вкладки на ленте", out var tabName);
             if (string.IsNullOrEmpty(tabName)) return application.CreateRibbonPanel("Шаблон ADSK");
             application.CreateRibbonTab(tabName);
             return application.CreateRibbonPanel(tabName, "Шаблон ADSK");

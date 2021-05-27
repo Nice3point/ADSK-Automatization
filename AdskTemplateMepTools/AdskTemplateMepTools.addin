@@ -1,7 +1,7 @@
 ﻿<RevitAddIns>
     <AddIn Type="Application">
         <Name>ADSK template plugin</Name>
-        <Assembly>AdskTemplateMepTools.dll</Assembly>
+        <Assembly>AdskTemplateMepTools\AdskTemplateMepTools.dll</Assembly>
         <AddInId>36C336A6-168B-428A-849E-D04525158034</AddInId>
         <FullClassName>AdskTemplateMepTools.Application</FullClassName>
         <VendorId>Nice3point</VendorId>

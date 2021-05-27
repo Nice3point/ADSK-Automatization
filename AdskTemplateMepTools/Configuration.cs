@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using AdskTemplateMepTools.Commands.AutoNumerate;
 using AdskTemplateMepTools.Commands.CheckADSK;
 using AdskTemplateMepTools.Commands.CopyADSK.Commands;
@@ -9,17 +10,11 @@ using AdskTemplateMepTools.Commands.CreatePipeSystemViews;
 using AdskTemplateMepTools.Commands.CreateSpaces;
 using IniParser;
 using IniParser.Model;
-using AdskTemplateMepTools.Commands;
-using AdskTemplateMepTools.Commands.CopyADSK;
 
 namespace AdskTemplateMepTools
 {
     public static class Configuration
     {
-        public static readonly string ConfigurationDirectory = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".RevitAddins");
-
-        private static readonly string ConfigurationFile = Path.Combine(ConfigurationDirectory, "config.ini");
         private static FileIniDataParser _iniParser;
         private static IniData _iniData;
 
@@ -31,36 +26,47 @@ namespace AdskTemplateMepTools
             СheckBasicConfiguration();
         }
 
-        private static void СheckBasicConfiguration()
+        public static string GetConfigurationDirectory()
         {
-            if (!File.Exists($@"{ConfigurationFile}"))
-            {
-                Directory.CreateDirectory(ConfigurationDirectory);
-                File.Create($@"{ConfigurationFile}").Close();
-            }
-
-            _iniData = _iniParser.ReadFile(ConfigurationFile);
-            
-            WriteKey(nameof(Application), "Ribbon tab name", "", false);
-            WriteComment(nameof(Application), "Ribbon tab name",
-                "Название вкладки на ленте. Если значение не задано, используется вкладка \"Надстройки\"");
-            WriteKey(nameof(AutoNumerate), "Tab visibility", "true", false);
-            WriteComment(nameof(AutoNumerate), "Tab visibility", "Отображение вкладки на ленте");
-            WriteKey(nameof(CheckAdsk), "Tab visibility", "true", false);
-            WriteComment(nameof(CheckAdsk), "Tab visibility", "Отображение вкладки на ленте");
-            WriteKey(nameof(CopyAdsk), "Tab visibility", "true", false);
-            WriteComment(nameof(CopyAdsk), "Tab visibility", "Отображение вкладки на ленте");
-            WriteKey(nameof(CopyAdsk), "Profile path", "", false);
-            WriteComment(nameof(CopyAdsk), "Profile path", "Путь к файлу с конфигурацией  копирования");
-            WriteKey(nameof(CreateDuctSystemViews), "Tab visibility", "true", false);
-            WriteComment(nameof(CreateDuctSystemViews), "Tab visibility", "Отображение вкладки на ленте");
-            WriteKey(nameof(CreatePipeSystemViews), "Tab visibility", "true", false);
-            WriteComment(nameof(CreatePipeSystemViews), "Tab visibility", "Отображение вкладки на ленте");
-            WriteKey(nameof(CreateSpaces), "Tab visibility", "true", false);
-            WriteComment(nameof(CreateSpaces), "Tab visibility", "Отображение вкладки на ленте");
+            const string addinSubFolder = ".RevitAddins";
+            var userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            var addinName = Assembly.GetExecutingAssembly().GetName().Name;
+            return Path.Combine(userProfile, addinSubFolder, addinName);
         }
 
-        private static bool KeyExists(string section, string key) => _iniData[section].ContainsKey(key);
+        private static string GetConfigurationFilePath()
+        {
+            const string fileName = "config.ini";
+            return Path.Combine(GetConfigurationDirectory(), fileName);
+        }
+
+        private static void СheckBasicConfiguration()
+        {
+            if (!File.Exists($@"{GetConfigurationFilePath()}"))
+            {
+                Directory.CreateDirectory(GetConfigurationDirectory());
+                File.Create($@"{GetConfigurationFilePath()}").Close();
+            }
+
+            _iniData = _iniParser.ReadFile(GetConfigurationFilePath());
+
+            WriteKey(nameof(Application), "Название вкладки на ленте", "", false);
+            WriteComment(nameof(Application), "Название вкладки на ленте",
+                "Если значение не задано, используется вкладка \"Надстройки\"");
+            WriteKey(nameof(AutoNumerate), "Показывать кнопку", "true", false);
+            WriteKey(nameof(CheckAdsk), "Показывать кнопку", "true", false);
+            WriteKey(nameof(CopyAdsk), "Показывать кнопку", "true", false);
+            WriteKey(nameof(CopyAdsk), "Путь к файлу настроек", "", false);
+            WriteComment(nameof(CopyAdsk), "Путь к файлу настроек", "Автогенерируемый .json файл");
+            WriteKey(nameof(CreateDuctSystemViews), "Показывать кнопку", "true", false);
+            WriteKey(nameof(CreatePipeSystemViews), "Показывать кнопку", "true", false);
+            WriteKey(nameof(CreateSpaces), "Показывать кнопку", "true", false);
+        }
+
+        private static bool KeyExists(string section, string key)
+        {
+            return _iniData[section].ContainsKey(key);
+        }
 
         public static bool TryReadKey(string section, string key, out string value)
         {
@@ -69,6 +75,7 @@ namespace AdskTemplateMepTools
                 value = _iniData[section][key];
                 return true;
             }
+
             value = "";
             return false;
         }
@@ -77,7 +84,7 @@ namespace AdskTemplateMepTools
         {
             if (KeyExists(section, key) && rewriting == false) return;
             _iniData[section][key] = value;
-            _iniParser.WriteFile($@"{ConfigurationFile}", _iniData);
+            _iniParser.WriteFile($@"{GetConfigurationFilePath()}", _iniData);
         }
 
         private static void WriteComment(string section, string key, string value, bool rewriting = true)
@@ -85,7 +92,7 @@ namespace AdskTemplateMepTools
             if (!KeyExists(section, key)) return;
             if (KeyExists(section, key) && rewriting == false) return;
             _iniData[section].GetKeyData(key).Comments = new List<string> {value};
-            _iniParser.WriteFile($@"{ConfigurationFile}", _iniData);
+            _iniParser.WriteFile($@"{GetConfigurationFilePath()}", _iniData);
         }
     }
 }

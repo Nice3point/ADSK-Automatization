@@ -4,12 +4,11 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:vm="clr-namespace:AdskTemplateMepTools.Commands.CopyADSK"
     xmlns:viewModel="clr-namespace:AdskTemplateMepTools.Commands.CopyADSK.ViewModel"
     d:DataContext="{d:DesignInstance viewModel:CopyAdskSettingsViewModel }"
     mc:Ignorable="d"
     WindowStartupLocation="CenterScreen"
-    Icon="Resources/Icons/WindowSettings.ico"
+    Icon="../../../Resources/Icons/Windows/WindowSettings.ico"
     Title="Настройки копирования параметров"
     MinHeight="300"
     MinWidth="500"
@@ -19,7 +18,8 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="../../Styles/SettingsStyleDictionary.xaml" />
+                <ResourceDictionary
+                    Source="../../../Styles/SettingsStyleDictionary.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
@@ -43,30 +43,33 @@
                 Width="80"
                 Height="35"
                 Content="Загрузить"
-                Command="{Binding LoadSchedules}">
-            </Button>
+                Command="{Binding LoadSchedules}" />
             <Button
                 DockPanel.Dock="Right"
                 Style="{StaticResource SettingsStyleButton}"
                 Width="80"
                 Height="35"
                 Content="Сохранить"
-                Command="{Binding SaveSchedules}">
-            </Button>
+                Command="{Binding SaveSchedules}" />
             <TextBlock
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
                 Margin="10"
                 Foreground="#6A3C3C3C"
-                Text="{Binding SchedulesPath}"
+                Text="{Binding SchedulesConfigPath}"
                 TextTrimming="CharacterEllipsis" />
         </DockPanel>
         <StatusBar
             DockPanel.Dock="Bottom"
             Height="24">
-            <TextBlock Margin="3,0,0,0">@Nice3point</TextBlock>
-            <StatusBarItem HorizontalAlignment="Right">
-                <ResizeGrip Opacity="0.75" />
+            <TextBlock
+                Margin="3,0,0,0">
+                @Nice3point
+            </TextBlock>
+            <StatusBarItem
+                HorizontalAlignment="Right">
+                <ResizeGrip
+                    Opacity="0.75" />
             </StatusBarItem>
         </StatusBar>
         <Separator
@@ -87,7 +90,7 @@
                 Width="25"
                 Height="25"
                 Content="+"
-                Command="{Binding AddSchedulesOnList}"/>
+                Command="{Binding AddSchedulesOnList}" />
             <Button
                 Grid.Column="1"
                 Style="{StaticResource SettingsStyleButton}"
@@ -95,7 +98,7 @@
                 Height="25"
                 Content="-"
                 Command="{Binding DeleteSchedulesFromList}"
-                CommandParameter="{Binding SelectedItems, ElementName=ListBoxSpecificationNames}"/>
+                CommandParameter="{Binding SelectedItems, ElementName=ListBoxSpecificationNames}" />
         </Grid>
         <Separator
             DockPanel.Dock="Bottom"
@@ -106,6 +109,6 @@
             SelectionMode="Extended"
             ItemContainerStyle="{StaticResource ListBoxItemStyle}"
             ItemsSource="{Binding Schedules, UpdateSourceTrigger=PropertyChanged}"
-            DisplayMemberPath="Name"/>
+            DisplayMemberPath="Name" />
     </DockPanel>
 </Window>

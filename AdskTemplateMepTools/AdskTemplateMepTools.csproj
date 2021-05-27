@@ -138,6 +138,7 @@
         <None Include="AdskTemplateMepTools.addin">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
+        <None Include="Resources\Icons\Installer\BackgroundImage.png" />
         <None Include="App.config" />
     </ItemGroup>
     <ItemGroup>
@@ -161,9 +162,6 @@
         <Page Include="Commands\CopyADSK\View\CopyADSKPickSchedulesView.xaml" />
         <Page Include="Commands\CopyADSK\View\CopyADSKSettingsView.xaml" />
         <Page Include="Styles\SettingsStyleDictionary.xaml" />
-    </ItemGroup>
-    <ItemGroup>
-      <Content Include="Resources\Icons\Installer\BackgroundImage.png" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <PropertyGroup>

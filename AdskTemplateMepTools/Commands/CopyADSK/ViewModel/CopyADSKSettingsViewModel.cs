@@ -27,31 +27,31 @@ namespace AdskTemplateMepTools.Commands.CopyADSK.ViewModel
             _model = model;
             Schedules = new ObservableCollection<Schedule>();
 
-            Configuration.TryReadKey(nameof(CopyAdsk), "Profile path", out var path);
+            Configuration.TryReadKey(nameof(CopyAdsk), "Путь к файлу настроек", out var path);
             if (string.IsNullOrEmpty(path) || !File.Exists(path))
             {
-                Schedules = CopyAdskSettings.CreateDefaultSchedules(SchedulesPath);
-                Configuration.WriteKey(nameof(CopyAdsk), "Profile path", SchedulesPath);
+                Schedules = CopyAdskSettings.CreateDefaultSchedules(SchedulesConfigPath);
+                Configuration.WriteKey(nameof(CopyAdsk), "Путь к файлу настроек", SchedulesConfigPath);
             }
             else
             {
-                SchedulesPath = path;
-                Schedules = CopyAdskSettings.LoadSchedules(SchedulesPath);
+                SchedulesConfigPath = path;
+                Schedules = CopyAdskSettings.LoadSchedules(SchedulesConfigPath);
             }
         }
 
         public ObservableCollection<Schedule> Schedules { get; }
 
-        public string SchedulesPath
+        public string SchedulesConfigPath
         {
             get => string.IsNullOrEmpty(_schedulesPath)
-                ? Path.Combine(Configuration.ConfigurationDirectory, "CopyADSKSettings.json")
+                ? Path.Combine(Configuration.GetConfigurationDirectory(), "CopyADSKSettings.json")
                 : _schedulesPath;
             set
             {
                 _schedulesPath = value;
-                Configuration.WriteKey(nameof(CopyAdsk), "Profile path", value);
-                OnPropertyChanged(nameof(SchedulesPath));
+                Configuration.WriteKey(nameof(CopyAdsk), "Путь к файлу настроек", value);
+                OnPropertyChanged(nameof(SchedulesConfigPath));
             }
         }
 
@@ -63,13 +63,13 @@ namespace AdskTemplateMepTools.Commands.CopyADSK.ViewModel
                 {
                     var openFileDialog = new OpenFileDialog
                     {
-                        InitialDirectory = SchedulesPath,
+                        InitialDirectory = Path.GetDirectoryName(SchedulesConfigPath) ?? string.Empty,
                         Filter = "Json files (*.json)|*.json"
                     };
                     if (openFileDialog.ShowDialog() != true) return;
-                    SchedulesPath = openFileDialog.FileName;
+                    SchedulesConfigPath = openFileDialog.FileName;
                     Schedules.Clear();
-                    foreach (var schedule in CopyAdskSettings.LoadSchedules(SchedulesPath)) Schedules.Add(schedule);
+                    foreach (var schedule in CopyAdskSettings.LoadSchedules(SchedulesConfigPath)) Schedules.Add(schedule);
                 });
             }
         }
@@ -82,13 +82,13 @@ namespace AdskTemplateMepTools.Commands.CopyADSK.ViewModel
                 {
                     var saveFileDialog = new SaveFileDialog
                     {
-                        FileName = Path.GetFileName(SchedulesPath),
-                        InitialDirectory = SchedulesPath ?? string.Empty,
+                        FileName = Path.GetFileName(SchedulesConfigPath),
+                        InitialDirectory = Path.GetDirectoryName(SchedulesConfigPath) ?? string.Empty,
                         Filter = "Json files (*.json)|*.json"
                     };
                     if (saveFileDialog.ShowDialog() != true) return;
-                    SchedulesPath = saveFileDialog.FileName;
-                    CopyAdskSettings.SaveSchedules(SchedulesPath, Schedules);
+                    SchedulesConfigPath = saveFileDialog.FileName;
+                    CopyAdskSettings.SaveSchedules(SchedulesConfigPath, Schedules);
                 });
             }
         }
