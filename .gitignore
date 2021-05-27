@@ -1,4 +1,5 @@
 ﻿.idea/
+!.idea/.idea.ADSK-Automatization/.idea/runConfigurations
 .vs/
 obj/
 bin/

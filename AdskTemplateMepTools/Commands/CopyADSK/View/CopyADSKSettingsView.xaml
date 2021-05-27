@@ -1,0 +1,111 @@
+<Window
+    x:Class="AdskTemplateMepTools.Commands.CopyADSK.View.CopyAdskSettingsView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:vm="clr-namespace:AdskTemplateMepTools.Commands.CopyADSK"
+    xmlns:viewModel="clr-namespace:AdskTemplateMepTools.Commands.CopyADSK.ViewModel"
+    d:DataContext="{d:DesignInstance viewModel:CopyAdskSettingsViewModel }"
+    mc:Ignorable="d"
+    WindowStartupLocation="CenterScreen"
+    Icon="Resources/Icons/WindowSettings.ico"
+    Title="Настройки копирования параметров"
+    MinHeight="300"
+    MinWidth="500"
+    Height="400"
+    Width="500"
+    Style="{DynamicResource SettingsWindowStyle}">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../Styles/SettingsStyleDictionary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <DockPanel
+        LastChildFill="True">
+        <DockPanel
+            DockPanel.Dock="Top"
+            Height="50"
+            LastChildFill="True">
+            <TextBlock
+                DockPanel.Dock="Left"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                TextAlignment="Center"
+                TextWrapping="WrapWithOverflow"
+                Margin="10"
+                Text="Профиль" />
+            <Button
+                DockPanel.Dock="Right"
+                Style="{StaticResource SettingsStyleButton}"
+                Width="80"
+                Height="35"
+                Content="Загрузить"
+                Command="{Binding LoadSchedules}">
+            </Button>
+            <Button
+                DockPanel.Dock="Right"
+                Style="{StaticResource SettingsStyleButton}"
+                Width="80"
+                Height="35"
+                Content="Сохранить"
+                Command="{Binding SaveSchedules}">
+            </Button>
+            <TextBlock
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                Margin="10"
+                Foreground="#6A3C3C3C"
+                Text="{Binding SchedulesPath}"
+                TextTrimming="CharacterEllipsis" />
+        </DockPanel>
+        <StatusBar
+            DockPanel.Dock="Bottom"
+            Height="24">
+            <TextBlock Margin="3,0,0,0">@Nice3point</TextBlock>
+            <StatusBarItem HorizontalAlignment="Right">
+                <ResizeGrip Opacity="0.75" />
+            </StatusBarItem>
+        </StatusBar>
+        <Separator
+            DockPanel.Dock="Top"
+            Background="Black" />
+        <Grid
+            Height="30"
+            Width="100"
+            HorizontalAlignment="Center"
+            DockPanel.Dock="Bottom">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Button
+                Grid.Column="0"
+                Style="{StaticResource SettingsStyleButton}"
+                Width="25"
+                Height="25"
+                Content="+"
+                Command="{Binding AddSchedulesOnList}"/>
+            <Button
+                Grid.Column="1"
+                Style="{StaticResource SettingsStyleButton}"
+                Width="25"
+                Height="25"
+                Content="-"
+                Command="{Binding DeleteSchedulesFromList}"
+                CommandParameter="{Binding SelectedItems, ElementName=ListBoxSpecificationNames}"/>
+        </Grid>
+        <Separator
+            DockPanel.Dock="Bottom"
+            Background="Black" />
+        <ListBox
+            x:Name="ListBoxSpecificationNames"
+            BorderBrush="White"
+            SelectionMode="Extended"
+            ItemContainerStyle="{StaticResource ListBoxItemStyle}"
+            ItemsSource="{Binding Schedules, UpdateSourceTrigger=PropertyChanged}"
+            DisplayMemberPath="Name"/>
+    </DockPanel>
+</Window>
