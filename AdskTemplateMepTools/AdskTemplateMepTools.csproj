@@ -10,6 +10,7 @@
         <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
         <FileAlignment>512</FileAlignment>
         <LangVersion>9</LangVersion>
+        <Nullable>disable</Nullable>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug R21|AnyCPU' ">
         <DebugSymbols>true</DebugSymbols>
@@ -107,6 +108,8 @@
         <Reference Include="WindowsBase" />
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="Commands\CopyADSK\Operations\CopyIntegerOperation.cs" />
+        <Compile Include="Commands\CopyADSK\Operations\IOperation.cs" />
         <Compile Include="Resources\Localization\Application.Designer.cs">
             <DesignTime>True</DesignTime>
             <AutoGen>True</AutoGen>
@@ -136,6 +139,7 @@
         <Compile Include="Configuration.cs" />
         <Compile Include="Installer.cs" />
         <Compile Include="RevitAPI\RevitFunctions.cs" />
+        <Compile Include="RevitAPI\TransactionManager.cs" />
         <Compile Include="Styles\SettingsStyleDictionary.cs" />
         <Compile Include="Properties\Annotations.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />

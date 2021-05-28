@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using AdskTemplateMepTools.Commands.CopyADSK.Operations;
 using AdskTemplateMepTools.Commands.CopyADSK.ViewModel;
 using AdskTemplateMepTools.RevitAPI;
 using Autodesk.Revit.Attributes;
@@ -13,8 +15,6 @@ namespace AdskTemplateMepTools.Commands.CopyADSK.Commands
     public class CopyAdsk : IExternalCommand
     {
         private static Document _doc;
-        private static List<Element> _copiedElements;
-        private static string _copiedData;
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
@@ -50,53 +50,69 @@ namespace AdskTemplateMepTools.Commands.CopyADSK.Commands
             }
         }
 
-        private static void CopyToAdsk(ViewSchedule vs, ObservableCollection<Operation> operations)
+        private static void CopyToAdsk(ViewSchedule vs, ObservableCollection<IOperation> operations)
         {
             var tData = vs.GetTableData();
             var tsDada = tData.GetSectionData(SectionType.Body);
-            using var tGroup = new TransactionGroup(_doc, "Заполнение ADSK_Наименование в спецификациях");
-            tGroup.Start();
-            for (var rInd = 0; rInd < tsDada.NumberOfRows; rInd++)
-                foreach (var operation in operations)
-                {
-                    _copiedElements = RevitFunctions.GetElementsOnRow(_doc, vs, rInd);
-                    if (_copiedElements == null) continue;
-                    switch (operation.Command)
+            TransactionManager.CreateTransactionGroup(_doc, "Копирование параметров", () =>
+            {
+                for (var rInd = 0; rInd < tsDada.NumberOfRows; rInd++)
+                    foreach (var operation in operations)
                     {
-                        case Command.CopyName:
-                            _copiedData = tsDada.GetCellText(rInd, operation.SourceColumn - 1);
-                            RevitFunctions.CopyAdskName(_doc, _copiedElements, _copiedData);
-                            break;
-                        case Command.CopyLength:
-                            RevitFunctions.CopyLengthValue(_doc, _copiedElements, operation.ReserveLength,
-                                operation.ReserveParameter);
-                            break;
-                        case Command.CopyCount:
-                            RevitFunctions.CopyCountValue(_doc, _copiedElements);
-                            break;
-                        case Command.CopyArea:
-                            RevitFunctions.CopyAreaValue(_doc, _copiedElements, operation.ReserveLength,
-                                operation.ReserveParameter);
-                            break;
-                        case Command.CopyVolume:
-                            RevitFunctions.CopyVolumeValue(_doc, _copiedElements, operation.ReserveLength,
-                                operation.ReserveParameter);
-                            break;
-                        case Command.CopyComment:
-                            _copiedData = tsDada.GetCellText(rInd, operation.SourceColumn - 1);
-                            RevitFunctions.CopyCommentValue(_doc, _copiedElements, _copiedData);
-                            break;
-                        case Command.CopyMass:
-                            _copiedData = tsDada.GetCellText(rInd, operation.SourceColumn - 1);
-                            RevitFunctions.CopyMass(_doc, _copiedElements, _copiedData);
-                            break;
-                        case Command.CopyTemperature:
-                            RevitFunctions.CopyTemperature(_doc, _copiedElements, operation.Parameter);
-                            break;
+                        var elements = RevitFunctions.GetElementsOnRow(_doc, vs, rInd);
+                        if (elements == null) continue;
+                        switch (operation.Name)
+                        {
+                            case Command.CopyString:
+                                break;
+                            case Command.CopyInteger:
+                                if (operation is CopyIntegerOperation integerOperation) CopyIntegerValues(integerOperation, tsDada, rInd, elements);
+                                break;
+                            case Command.CopyDouble:
+                                break;
+                            case Command.CopyArea:
+                                break;
+                            case Command.CopyVolume:
+                                break;
+                            case Command.CopyTemperature:
+                                break;
+                            case Command.CopyMass:
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
                     }
-                }
+            });
+        }
 
-            tGroup.Assimilate();
+        private static void CopyIntegerValues(CopyIntegerOperation operation, TableSectionData tsDada, int row, IEnumerable<Element> elements)
+        {
+            var reserve = 1;
+            if (!string.IsNullOrEmpty(operation.ReserveParameter))
+            {
+                if (RevitFunctions.TryGetGlobalReserveValue(_doc, operation.ReserveParameter, out int outValue)) reserve = outValue;
+            }
+            else
+            {
+                reserve = operation.Reserve;
+            }
+
+            var value = 1;
+            var column = operation.SourceColumn - 1;
+            if (column >= 0)
+            {
+                if (tsDada.NumberOfColumns < column)
+                {
+                    var data = tsDada.GetCellText(row, column);
+                    if (int.TryParse(data, out var outValue)) value = outValue;
+                }
+            }
+            else
+            {
+                value = operation.IntegerValue;
+            }
+
+            RevitFunctions.CopyIntegerValue(_doc, operation.Parameter, value * reserve, elements);
         }
     }
 }

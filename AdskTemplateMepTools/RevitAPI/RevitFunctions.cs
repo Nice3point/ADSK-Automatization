@@ -9,40 +9,62 @@ namespace AdskTemplateMepTools.RevitAPI
 {
     public static class RevitFunctions
     {
+        public static Parameter GetParameter(Element element, string parameterName)
+        {
+            var parameter = element.LookupParameter(parameterName);
+            if (parameter != null) return parameter;
+            var elementType = element.Document.GetElement(element.GetTypeId());
+            var typeParameter = elementType?.LookupParameter(parameterName);
+            if (typeParameter == null) return null;
+            parameter = typeParameter;
+            return parameter;
+        }
+        public static string GetParameterValue(Element element, string parameterName)
+        {
+            var parameter = GetParameter(element, parameterName);
+            if (parameter == null) return null;
+            var value = parameter.AsString();
+            if (value != null) return value;
+            var elementType = element.Document.GetElement(element.GetTypeId());
+            return elementType?.LookupParameter(parameterName)?.AsString();
+        }
         public static void CopySystemNameValue(Document doc, IEnumerable<Element> elements)
         {
-            using var tr = new Transaction(doc, "Копирование имени систем");
-            tr.Start();
-            foreach (var curElement in elements)
+            TransactionManager.CreateTransaction(doc, "Копирование имени систем", () =>
             {
-                var rbsName = curElement.get_Parameter(BuiltInParameter.RBS_SYSTEM_NAME_PARAM).AsString();
-                if (curElement is FamilyInstance fInstance)
+                foreach (var curElement in elements)
                 {
-                    if (null != fInstance.SuperComponent)
+                    var rbsName = curElement.get_Parameter(BuiltInParameter.RBS_SYSTEM_NAME_PARAM)?.AsString();
+                    if (curElement is FamilyInstance fInstance)
                     {
-                        rbsName = fInstance.SuperComponent.get_Parameter(BuiltInParameter.RBS_SYSTEM_NAME_PARAM).AsString();
-                        fInstance.LookupParameter("ИмяСистемы")?.Set(rbsName);
+                        if (null != fInstance.SuperComponent)
+                        {
+                            rbsName = fInstance.SuperComponent.get_Parameter(BuiltInParameter.RBS_SYSTEM_NAME_PARAM)?.AsString();
+                            fInstance.LookupParameter("ИмяСистемы")?.Set(rbsName);
+                        }
+                        else
+                        {
+                            fInstance.LookupParameter("ИмяСистемы")?.Set(rbsName);
+                        }
                     }
                     else
                     {
-                        fInstance.LookupParameter("ИмяСистемы")?.Set(rbsName);
+                        curElement.LookupParameter("ИмяСистемы")?.Set(rbsName);
                     }
                 }
-                else
-                {
-                    curElement.LookupParameter("ИмяСистемы")?.Set(rbsName);
-                }
-            }
 
-            tr.Commit();
+            });
         }
 
-        public static void CopyCountValue(Document doc, IEnumerable<Element> copiedElements)
+        public static void CopyIntegerValue(Document doc, string parameterName, int value, IEnumerable<Element> copiedElements)
         {
-            using var tr = new Transaction(doc, "Заполнение значений ADSK_Количество");
-            tr.Start();
-            foreach (var curElement in copiedElements) curElement.get_Parameter(SpfGuids.AdskQuantity)?.Set(1);
-            tr.Commit();
+            TransactionManager.CreateTransaction(doc, "Копирование целых чисел", () =>
+            {
+                foreach (var curElement in copiedElements)
+                {
+                    GetParameter(curElement, parameterName)?.Set(value);
+                }
+            });
         }
 
         public static void CopyTemperature(Document doc, IEnumerable<Element> copiedElements, string parameterName)
@@ -123,23 +145,36 @@ namespace AdskTemplateMepTools.RevitAPI
             foreach (var curElement in copiedElements) SetBuiltinParameterValue(doc, curElement, BuiltInParameter.RBS_CURVE_SURFACE_AREA, UnitTypeId.SquareMeters, reserveLength, reserveParameter);
             tr.Commit();
         }
-
-        private static bool TryGetGlobalReserveValue(Document doc, string name, out double value)
+        public static GlobalParameter GetGlobalParameter(Document doc, string name)
+        {
+            return new FilteredElementCollector(doc)
+                        .OfClass(typeof(GlobalParameter))
+                        .Cast<GlobalParameter>()
+                        .FirstOrDefault(gp => gp.Name.Equals(name));
+            
+        }
+        public static bool TryGetGlobalReserveValue(Document doc, string name, out double value)
         {
             value = default;
-            var reserveValue = new FilteredElementCollector(doc)
-                               .OfClass(typeof(GlobalParameter))
-                               .Cast<GlobalParameter>()
-                               .FirstOrDefault(gp => gp.Name.Equals(name));
-            if (reserveValue?.GetValue() is not DoubleParameterValue dVal) return false;
-            value = dVal.Value;
+            var reserveValue = GetGlobalParameter(doc, name);
+            if (reserveValue?.GetValue() is not DoubleParameterValue doubleParameterValue) return false;
+            value = doubleParameterValue.Value;
+            return true;
+        }
+        public static bool TryGetGlobalReserveValue(Document doc, string name, out int value)
+        {
+            value = default;
+            var reserveValue = GetGlobalParameter(doc, name);
+            if (reserveValue?.GetValue() is not IntegerParameterValue integerParameterValue) return false;
+            value = integerParameterValue.Value;
             return true;
         }
 
-        private static void SetBuiltinParameterValue(Document doc, Element curElement, BuiltInParameter parameter, ForgeTypeId unitType, double reserveLength, string reserveParameter)
+
+        public static void SetBuiltinParameterValue(Document doc, Element curElement, BuiltInParameter parameter, ForgeTypeId unitType, double reserveLength, string reserveParameter)
         {
             var len = curElement.get_Parameter(parameter).AsDouble();
-            if (!TryGetGlobalReserveValue(doc, reserveParameter, out var reserve)) reserve = reserveLength;
+            if (!TryGetGlobalReserveValue(doc, reserveParameter, out double reserve)) reserve = reserveLength;
             len = UnitUtils.ConvertFromInternalUnits(len, unitType) * reserve;
             curElement.get_Parameter(SpfGuids.AdskQuantity)?.Set(len);
         }
