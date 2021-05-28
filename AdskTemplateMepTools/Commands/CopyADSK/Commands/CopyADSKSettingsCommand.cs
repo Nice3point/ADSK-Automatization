@@ -87,7 +87,7 @@ namespace AdskTemplateMepTools.Commands.CopyADSK.Commands
                 //     new CopyDoubleOperation(defaultReserve, defaultReserveParameter)),
                 new("В_ВК_Гибкие трубы",
                     // new CopyStringOperation(defaultColumn),
-                    new CopyIntegerOperation("ADSK_Количество", 5)),
+                    new CopyIntegerOperation("ADSK_Количество", 1)),
                 // new("В_ВК_Изоляция труб",
                 //     new CopyStringOperation(defaultColumn),
                 //     new CopyVolumeOperation()),

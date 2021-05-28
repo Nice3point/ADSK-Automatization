@@ -108,8 +108,12 @@
         <Reference Include="WindowsBase" />
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="Commands\CopyADSK\CommandJsonConverter.cs" />
+        <Compile Include="Commands\CopyADSK\Operations.cs" />
         <Compile Include="Commands\CopyADSK\Operations\CopyIntegerOperation.cs" />
+        <Compile Include="Commands\CopyADSK\Operations\CopyStringOperation.cs" />
         <Compile Include="Commands\CopyADSK\Operations\IOperation.cs" />
+        <Compile Include="Commands\CopyADSK\Operations\Operation.cs" />
         <Compile Include="Resources\Localization\Application.Designer.cs">
             <DesignTime>True</DesignTime>
             <AutoGen>True</AutoGen>
@@ -146,7 +150,6 @@
         <Compile Include="Commands\SharedParametersGuid.cs" />
         <Compile Include="Commands\AutoNumerate\AutoNumerateCommand.cs" />
         <Compile Include="Commands\CheckADSK\CheckADSKCommand.cs" />
-        <Compile Include="Commands\CopyADSK\Operations.cs" />
         <Compile Include="Commands\CopyADSK\Schedule.cs" />
         <Compile Include="Commands\RelayCommand.cs" />
         <Compile Include="Commands\CreateDuctSystemViews\CreateDuctSystemViewsCommand.cs" />

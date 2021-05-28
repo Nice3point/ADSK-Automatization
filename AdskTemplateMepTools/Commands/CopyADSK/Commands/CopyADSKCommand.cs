@@ -63,26 +63,32 @@ namespace AdskTemplateMepTools.Commands.CopyADSK.Commands
                         if (elements == null) continue;
                         switch (operation.Name)
                         {
-                            case Command.CopyString:
+                            case Operation.CopyString:
+                                if (operation is CopyStringOperation stringOperation) CopyStringValues(stringOperation, tsDada, rInd, elements);
                                 break;
-                            case Command.CopyInteger:
+                            case Operation.CopyInteger:
                                 if (operation is CopyIntegerOperation integerOperation) CopyIntegerValues(integerOperation, tsDada, rInd, elements);
                                 break;
-                            case Command.CopyDouble:
+                            case Operation.CopyDouble:
                                 break;
-                            case Command.CopyArea:
+                            case Operation.CopyArea:
                                 break;
-                            case Command.CopyVolume:
+                            case Operation.CopyVolume:
                                 break;
-                            case Command.CopyTemperature:
+                            case Operation.CopyTemperature:
                                 break;
-                            case Command.CopyMass:
+                            case Operation.CopyMass:
                                 break;
                             default:
                                 throw new ArgumentOutOfRangeException();
                         }
                     }
             });
+        }
+
+        private static void CopyStringValues(CopyStringOperation stringOperation, TableSectionData tsDada, int rInd, List<Element> elements)
+        {
+            throw new NotImplementedException();
         }
 
         private static void CopyIntegerValues(CopyIntegerOperation operation, TableSectionData tsDada, int row, IEnumerable<Element> elements)

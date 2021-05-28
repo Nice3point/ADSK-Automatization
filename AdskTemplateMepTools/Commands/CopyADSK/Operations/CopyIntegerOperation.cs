@@ -4,8 +4,6 @@ namespace AdskTemplateMepTools.Commands.CopyADSK.Operations
 {
     public class CopyIntegerOperation : IOperation
     {
-        public Command Name => Command.CopyInteger;
-
         public CopyIntegerOperation(string parameter, int integerValue)
         {
             Parameter = parameter;
@@ -31,19 +29,12 @@ namespace AdskTemplateMepTools.Commands.CopyADSK.Operations
             ReserveParameter = reserveParameter;
         }
 
-        [JsonProperty("Название параметра")]
-        public string Parameter { get; }
-        
-        [JsonProperty("Целое значение")]
-        public int IntegerValue { get; }
+        public Operation Name => Operation.CopyInteger;
 
-        [JsonProperty("Исходный столбец")]
-        public int SourceColumn { get; }
-        
-        [JsonProperty("Множитель")]
-        public int Reserve { get; }
-
-        [JsonProperty("Название параметра множителя")]
-        public string ReserveParameter { get; }
+        [JsonProperty("Название параметра")] public string Parameter { get; }
+        [JsonProperty("Целое значение")] public int IntegerValue { get; }
+        [JsonProperty("Исходный столбец")] public int SourceColumn { get; }
+        [JsonProperty("Множитель")] public int Reserve { get; }
+        [JsonProperty("Глобальный параметр множителя")] public string ReserveParameter { get; }
     }
 }
