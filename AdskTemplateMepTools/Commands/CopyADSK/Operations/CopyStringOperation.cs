@@ -1,16 +1,17 @@
+using System.ComponentModel;
 using Newtonsoft.Json;
 
 namespace AdskTemplateMepTools.Commands.CopyADSK.Operations
 {
     public class CopyStringOperation : IOperation
     {
-        public CopyStringOperation(int sourceColumn, string parameter)
+        public CopyStringOperation(string parameter, int sourceColumn)
         {
             SourceColumn = sourceColumn;
             Parameter = parameter;
         }
 
-        public CopyStringOperation(string value, string parameter)
+        public CopyStringOperation(string parameter, string value)
         {
             Value = value;
             Parameter = parameter;
@@ -26,8 +27,16 @@ namespace AdskTemplateMepTools.Commands.CopyADSK.Operations
 
         public Operation Name => Operation.CopyString;
 
-        [JsonProperty("Название параметра")] public string Parameter { get; }
-        [JsonProperty("Исходный столбец")] public int SourceColumn { get; }
-        [JsonProperty("Значение")] public string Value { get; }
+        [JsonProperty("Название параметра")]
+        [DefaultValue("")]
+        public string Parameter { get; }
+        
+        [JsonProperty("Исходный столбец")]
+        [DefaultValue("")]
+        public int SourceColumn { get; }
+        
+        [JsonProperty("Значение")]
+        [DefaultValue("")]
+        public string Value { get; }
     }
 }

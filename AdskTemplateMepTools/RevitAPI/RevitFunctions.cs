@@ -56,6 +56,17 @@ namespace AdskTemplateMepTools.RevitAPI
             });
         }
 
+        public static void CopyStringValue(Document doc, string parameterName, string value, IEnumerable<Element> copiedElements)
+        {
+            TransactionManager.CreateTransaction(doc, "Копирование текста", () =>
+            {
+                foreach (var curElement in copiedElements)
+                {
+                    GetParameter(curElement, parameterName)?.Set(value);
+                }
+            });
+        }
+
         public static void CopyIntegerValue(Document doc, string parameterName, int value, IEnumerable<Element> copiedElements)
         {
             TransactionManager.CreateTransaction(doc, "Копирование целых чисел", () =>
@@ -63,6 +74,20 @@ namespace AdskTemplateMepTools.RevitAPI
                 foreach (var curElement in copiedElements)
                 {
                     GetParameter(curElement, parameterName)?.Set(value);
+                }
+            });
+        }
+        public static void CopyLengthValue(Document doc, string parameterName, double reserve, IEnumerable<Element> copiedElements)
+        {
+            TransactionManager.CreateTransaction(doc, "Заполнение длины в метрах", () =>
+            {
+                foreach (var curElement in copiedElements)
+                {
+                    var parameter = curElement.get_Parameter(BuiltInParameter.CURVE_ELEM_LENGTH);
+                    if (parameter is not {StorageType: StorageType.Double}) continue;
+                    var value = parameter.AsDouble();
+                    var length = UnitUtils.ConvertFromInternalUnits(value, UnitTypeId.Meters) * reserve;
+                    GetParameter(curElement, parameterName)?.Set(length);
                 }
             });
         }
@@ -118,14 +143,6 @@ namespace AdskTemplateMepTools.RevitAPI
                 if (double.TryParse(copiedData.Replace(',', '.'), out var value)) massParam?.Set(UnitUtils.ConvertToInternalUnits(value, UnitTypeId.Kilograms));
             }
 
-            tr.Commit();
-        }
-
-        public static void CopyLengthValue(Document doc, IEnumerable<Element> copiedElements, double reserveLength = 1, string reserveParameter = "")
-        {
-            using var tr = new Transaction(doc, "Заполнение значения ADSK_Количество");
-            tr.Start();
-            foreach (var curElement in copiedElements) SetBuiltinParameterValue(doc, curElement, BuiltInParameter.CURVE_ELEM_LENGTH, UnitTypeId.Meters, reserveLength, reserveParameter);
             tr.Commit();
         }
 

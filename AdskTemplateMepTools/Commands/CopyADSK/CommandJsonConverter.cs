@@ -1,5 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Runtime.Serialization;
 using AdskTemplateMepTools.Commands.CopyADSK.Operations;
 using Newtonsoft.Json;
@@ -24,8 +25,9 @@ namespace AdskTemplateMepTools.Commands.CopyADSK
             foreach (var jToken in jsonArray)
             {
                 if (jToken is not JObject jObject) continue;
-                if (!jObject.ContainsKey(nameof(IOperation.Name))) continue;
-                if (!jObject.TryGetValue(nameof(IOperation.Name), out var nameToken)) continue;
+                if (!TryGetValueByJsonProperty(typeof(IOperation), nameof(IOperation.Name),out var iOperationName)) continue;
+                if (!jObject.ContainsKey(iOperationName)) continue;
+                if (!jObject.TryGetValue(iOperationName, out var nameToken)) continue;
                 var nameValue = nameToken.Value<string>();
                 if (nameValue == null) continue;
                 if (!TryGetEnumByEnumMember<Operation>(nameValue, out var command))
@@ -37,6 +39,7 @@ namespace AdskTemplateMepTools.Commands.CopyADSK
                     Operation.CopyString => jToken.ToObject<CopyStringOperation>(),
                     Operation.CopyInteger => jToken.ToObject<CopyIntegerOperation>(),
                     Operation.CopyDouble => jToken.ToObject<CopyDoubleOperation>(),
+                    Operation.CopyLength => jToken.ToObject<CopyLengthOperation>(),
                     Operation.CopyArea => jToken.ToObject<CopyAreaOperation>(),
                     Operation.CopyVolume => jToken.ToObject<CopyVolumeOperation>(),
                     Operation.CopyTemperature => jToken.ToObject<CopyTemperatureOperation>(),
@@ -68,6 +71,19 @@ namespace AdskTemplateMepTools.Commands.CopyADSK
             }
 
             @enum = default;
+            return false;
+        }
+        private static bool TryGetValueByJsonProperty(Type type, string field, out string propertyName)
+        {
+            var property = TypeDescriptor.GetProperties(type)[field];
+            foreach (var attribute in property.Attributes)
+            {
+                if (attribute is not JsonPropertyAttribute jsonProperty) continue;
+                propertyName = jsonProperty.PropertyName;
+                return true;
+            }
+
+            propertyName = default;
             return false;
         }
     }

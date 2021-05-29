@@ -111,6 +111,7 @@
         <Compile Include="Commands\CopyADSK\CommandJsonConverter.cs" />
         <Compile Include="Commands\CopyADSK\Operations.cs" />
         <Compile Include="Commands\CopyADSK\Operations\CopyIntegerOperation.cs" />
+        <Compile Include="Commands\CopyADSK\Operations\CopyLengthOperation.cs" />
         <Compile Include="Commands\CopyADSK\Operations\CopyStringOperation.cs" />
         <Compile Include="Commands\CopyADSK\Operations\IOperation.cs" />
         <Compile Include="Commands\CopyADSK\Operations\Operation.cs" />

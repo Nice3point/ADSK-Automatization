@@ -4,7 +4,7 @@ namespace AdskTemplateMepTools.Commands.CopyADSK.Operations
 {
     public interface IOperation
     {
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
+        [JsonProperty("Название операции", DefaultValueHandling = DefaultValueHandling.Populate)]
         Operation Name { get; }
     }
 }

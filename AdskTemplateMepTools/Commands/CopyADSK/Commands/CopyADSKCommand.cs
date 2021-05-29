@@ -54,6 +54,7 @@ namespace AdskTemplateMepTools.Commands.CopyADSK.Commands
         {
             var tData = vs.GetTableData();
             var tsDada = tData.GetSectionData(SectionType.Body);
+            if(operations.Count == 0) return;
             TransactionManager.CreateTransactionGroup(_doc, "Копирование параметров", () =>
             {
                 for (var rInd = 0; rInd < tsDada.NumberOfRows; rInd++)
@@ -71,6 +72,9 @@ namespace AdskTemplateMepTools.Commands.CopyADSK.Commands
                                 break;
                             case Operation.CopyDouble:
                                 break;
+                            case Operation.CopyLength:
+                                if (operation is CopyLengthOperation lengthOperation) CopyLengthValues(lengthOperation, elements);
+                                break;
                             case Operation.CopyArea:
                                 break;
                             case Operation.CopyVolume:
@@ -86,9 +90,22 @@ namespace AdskTemplateMepTools.Commands.CopyADSK.Commands
             });
         }
 
-        private static void CopyStringValues(CopyStringOperation stringOperation, TableSectionData tsDada, int rInd, List<Element> elements)
+        private static void CopyStringValues(CopyStringOperation operation, TableSectionData tsDada, int row, List<Element> elements)
         {
-            throw new NotImplementedException();
+            var value = string.Empty;
+            var column = operation.SourceColumn - 1;
+            if (column >= 0)
+            {
+                if (column < tsDada.NumberOfColumns)
+                {
+                    value = tsDada.GetCellText(row, column);
+                }
+            }
+            else
+            {
+                value = operation.Value;
+            }
+            RevitFunctions.CopyStringValue(_doc, operation.Parameter, value, elements);
         }
 
         private static void CopyIntegerValues(CopyIntegerOperation operation, TableSectionData tsDada, int row, IEnumerable<Element> elements)
@@ -107,7 +124,7 @@ namespace AdskTemplateMepTools.Commands.CopyADSK.Commands
             var column = operation.SourceColumn - 1;
             if (column >= 0)
             {
-                if (tsDada.NumberOfColumns < column)
+                if (column < tsDada.NumberOfColumns)
                 {
                     var data = tsDada.GetCellText(row, column);
                     if (int.TryParse(data, out var outValue)) value = outValue;
@@ -120,5 +137,20 @@ namespace AdskTemplateMepTools.Commands.CopyADSK.Commands
 
             RevitFunctions.CopyIntegerValue(_doc, operation.Parameter, value * reserve, elements);
         }
+        private static void CopyLengthValues(CopyLengthOperation operation, IEnumerable<Element> elements)
+        {
+            var reserve = 1d;
+            if (!string.IsNullOrEmpty(operation.ReserveParameter))
+            {
+                if (RevitFunctions.TryGetGlobalReserveValue(_doc, operation.ReserveParameter, out double outValue)) reserve = outValue;
+            }
+            else
+            {
+                reserve = operation.Reserve;
+            }
+
+            RevitFunctions.CopyLengthValue(_doc, operation.Parameter, reserve, elements);
+        }
+
     }
 }

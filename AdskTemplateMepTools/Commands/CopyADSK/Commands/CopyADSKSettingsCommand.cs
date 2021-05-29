@@ -48,7 +48,8 @@ namespace AdskTemplateMepTools.Commands.CopyADSK.Commands
             var serializer = new JsonSerializer
             {
                 Formatting = Formatting.Indented,
-                DefaultValueHandling = DefaultValueHandling.Ignore
+                DefaultValueHandling = DefaultValueHandling.Ignore,
+                NullValueHandling = NullValueHandling.Ignore
             };
             serializer.Serialize(file, schedules);
         }
@@ -56,44 +57,41 @@ namespace AdskTemplateMepTools.Commands.CopyADSK.Commands
         public static ObservableCollection<Schedule> CreateDefaultSchedules(string path)
         {
             const int defaultColumn = 2;
-            const double defaultReserve = 1;
-            const string defaultReserveParameter = "Запас";
             var schedules = new ObservableCollection<Schedule>
             {
-                // new("В_ОВ_Гибкие воздуховоды",
-                //     new CopyStringOperation(defaultColumn),
-                //     new CopyDoubleOperation(defaultReserve, defaultReserveParameter)),
-                // new("В_ОВ_Изоляция воздуховодов",
-                //     new CopyStringOperation(defaultColumn),
+                new("В_ОВ_Гибкие воздуховоды",
+                    new CopyStringOperation(SpfParameter.AdskName,defaultColumn),
+                    new CopyLengthOperation(SpfParameter.AdskQuantity, ProjectGlobalParameter.Reserve)),
+                new("В_ОВ_Изоляция воздуховодов",
+                    new CopyStringOperation(SpfParameter.AdskName,defaultColumn)),
                 //     new CopyAreaOperation()),
-                // new("В_ОВ_Круглые воздуховоды",
-                //     new CopyStringOperation(defaultColumn),
-                //     new CopyDoubleOperation(defaultReserve, defaultReserveParameter),
-                //     new CopyStringOperation(8 , "ADSK")),
-                // new("В_ОВ_Прямоугольные воздуховоды",
-                //     new CopyStringOperation(defaultColumn),
-                //     new CopyDoubleOperation(defaultReserve, defaultReserveParameter),
+                new("В_ОВ_Круглые воздуховоды",
+                    new CopyStringOperation(SpfParameter.AdskName,defaultColumn),
+                    new CopyLengthOperation(SpfParameter.AdskQuantity, ProjectGlobalParameter.Reserve)),
+                new("В_ОВ_Прямоугольные воздуховоды",
+                    new CopyStringOperation(SpfParameter.AdskName,defaultColumn),
+                    new CopyLengthOperation(SpfParameter.AdskQuantity, ProjectGlobalParameter.Reserve)),
                 //     new CopyCommentOperation()),
-                // new("В_ОВ_Фасонные детали воздуховодов",
-                //     new CopyStringOperation(defaultColumn)),
-                // new("В_ОВ_Гибкие трубы",
-                //     new CopyStringOperation(defaultColumn),
-                //     new CopyDoubleOperation(defaultReserve, defaultReserveParameter)),
-                // new("В_ОВ_Изоляция труб",
-                //     new CopyStringOperation(defaultColumn),
+                new("В_ОВ_Фасонные детали воздуховодов",
+                new CopyStringOperation(SpfParameter.AdskName,defaultColumn)),
+                new("В_ОВ_Гибкие трубы",
+                    new CopyStringOperation(SpfParameter.AdskName,defaultColumn),
+                    new CopyLengthOperation(SpfParameter.AdskQuantity, ProjectGlobalParameter.Reserve)),
+                new("В_ОВ_Изоляция труб",
+                    new CopyStringOperation(SpfParameter.AdskName,defaultColumn)),
                 //     new CopyVolumeOperation()),
-                // new("В_ОВ_Трубопроводы",
-                //     new CopyStringOperation(defaultColumn),
-                //     new CopyDoubleOperation(defaultReserve, defaultReserveParameter)),
+                new("В_ОВ_Трубопроводы",
+                    new CopyStringOperation(SpfParameter.AdskName,defaultColumn),
+                    new CopyLengthOperation(SpfParameter.AdskQuantity, ProjectGlobalParameter.Reserve)),
                 new("В_ВК_Гибкие трубы",
-                    // new CopyStringOperation(defaultColumn),
-                    new CopyIntegerOperation("ADSK_Количество", 1)),
-                // new("В_ВК_Изоляция труб",
-                //     new CopyStringOperation(defaultColumn),
+                    new CopyStringOperation(SpfParameter.AdskName,defaultColumn),
+                    new CopyIntegerOperation(SpfParameter.AdskQuantity, 1)),
+                new("В_ВК_Изоляция труб",
+                    new CopyStringOperation(SpfParameter.AdskName,defaultColumn)),
                 //     new CopyVolumeOperation()),
-                // new("В_ВК_Трубопроводы",
-                //     new CopyStringOperation(defaultColumn),
-                //     new CopyDoubleOperation(defaultReserve, defaultReserveParameter)),
+                new("В_ВК_Трубопроводы",
+                    new CopyStringOperation(SpfParameter.AdskName,defaultColumn),
+                    new CopyLengthOperation(SpfParameter.AdskQuantity, ProjectGlobalParameter.Reserve)),
                 // new("В_ТМ_Технико-экономические показатели",
                 //     new CopyMassOperation()),
                 // new("В_ТМ_Трубопроводы",

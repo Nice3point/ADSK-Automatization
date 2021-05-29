@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using Newtonsoft.Json;
 
 namespace AdskTemplateMepTools.Commands.CopyADSK.Operations
@@ -30,11 +31,17 @@ namespace AdskTemplateMepTools.Commands.CopyADSK.Operations
         }
 
         public Operation Name => Operation.CopyInteger;
-
+        
         [JsonProperty("Название параметра")] public string Parameter { get; }
-        [JsonProperty("Целое значение")] public int IntegerValue { get; }
         [JsonProperty("Исходный столбец")] public int SourceColumn { get; }
-        [JsonProperty("Множитель")] public int Reserve { get; }
-        [JsonProperty("Глобальный параметр множителя")] public string ReserveParameter { get; }
+        [JsonProperty("Целое значение")] public int IntegerValue { get; }
+        
+        [JsonProperty("Множитель")] 
+        [DefaultValue(1)]
+        public int Reserve { get; }
+        
+        [JsonProperty("Глобальный параметр множителя")]
+        [DefaultValue("")]
+        public string ReserveParameter { get; }
     }
 }

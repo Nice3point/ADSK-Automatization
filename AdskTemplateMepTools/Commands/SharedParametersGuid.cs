@@ -15,4 +15,22 @@ namespace AdskTemplateMepTools.Commands
         public static readonly Guid AdskMassDimension = new("5913a1f9-0b38-4364-96fe-a6f3cb7fcc68"); //Масса  с размерностью
         public static readonly Guid AdskNote = new("a85b7661-26b0-412f-979c-66af80b4b2c3"); //Примечание
     }
+
+    public static class SpfParameter
+    {
+        public const string AdskPosition = "ADSK_Позиция";
+        public const string AdskName = "ADSK_Наименование";
+        public const string AdskType = "ADSK_Марка";
+        public const string AdskCode = "ADSK_Код изделия";
+        public const string AdskManufacturer = "ADSK_Завод-изготовитель";
+        public const string AdskUnit = "ADSK_Единица измерения";
+        public const string AdskQuantity = "ADSK_Количество";
+        public const string AdskMass = "ADSK_Масса";
+        public const string AdskMassDimension = "ADSK_Масса элемента";
+        public const string AdskNote = "ADSK_Примечание";
+    }
+    public static class ProjectGlobalParameter
+    {
+        public const string Reserve = "Запас";
+    }
 }
