@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using AdskTemplateMepTools.Commands;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Plumbing;
 
-namespace AdskTemplateMepTools.RevitAPI
+namespace AdskTemplateMepTools.RevitUtils
 {
     public static class RevitFunctions
     {
@@ -19,6 +18,7 @@ namespace AdskTemplateMepTools.RevitAPI
             parameter = typeParameter;
             return parameter;
         }
+
         public static string GetParameterValue(Element element, string parameterName)
         {
             var parameter = GetParameter(element, parameterName);
@@ -28,6 +28,7 @@ namespace AdskTemplateMepTools.RevitAPI
             var elementType = element.Document.GetElement(element.GetTypeId());
             return elementType?.LookupParameter(parameterName)?.AsString();
         }
+
         public static void CopySystemNameValue(Document doc, IEnumerable<Element> elements)
         {
             TransactionManager.CreateTransaction(doc, "Копирование имени систем", () =>
@@ -52,7 +53,6 @@ namespace AdskTemplateMepTools.RevitAPI
                         curElement.LookupParameter("ИмяСистемы")?.Set(rbsName);
                     }
                 }
-
             });
         }
 
@@ -60,10 +60,7 @@ namespace AdskTemplateMepTools.RevitAPI
         {
             TransactionManager.CreateTransaction(doc, "Копирование текста", () =>
             {
-                foreach (var curElement in copiedElements)
-                {
-                    GetParameter(curElement, parameterName)?.Set(value);
-                }
+                foreach (var curElement in copiedElements) GetParameter(curElement, parameterName)?.Set(value);
             });
         }
 
@@ -71,12 +68,10 @@ namespace AdskTemplateMepTools.RevitAPI
         {
             TransactionManager.CreateTransaction(doc, "Копирование целых чисел", () =>
             {
-                foreach (var curElement in copiedElements)
-                {
-                    GetParameter(curElement, parameterName)?.Set(value);
-                }
+                foreach (var curElement in copiedElements) GetParameter(curElement, parameterName)?.Set(value);
             });
         }
+
         public static void CopyLengthValue(Document doc, string parameterName, double reserve, IEnumerable<Element> copiedElements)
         {
             TransactionManager.CreateTransaction(doc, "Заполнение длины в метрах", () =>
@@ -92,84 +87,72 @@ namespace AdskTemplateMepTools.RevitAPI
             });
         }
 
-        public static void CopyTemperature(Document doc, IEnumerable<Element> copiedElements, string parameterName)
+        public static void CopyAreaValue(Document doc, string parameterName, double reserve, IEnumerable<Element> copiedElements)
         {
-            using var tr = new Transaction(doc, $"Заполнение значений {parameterName}");
-            tr.Start();
-            foreach (var curElement in copiedElements)
+            TransactionManager.CreateTransaction(doc, "Заполнение площади в квадратных метрах", () =>
             {
-                var pipe = curElement as Pipe;
-                if (null == pipe) continue;
-                var systemType = doc.GetElement(pipe.MEPSystem.GetTypeId()) as PipingSystemType;
-                if (systemType == null) continue;
-                var temperature = systemType.FluidTemperature;
-                var temperatureParam = curElement.LookupParameter("Температура трубопровода");
-                temperatureParam?.Set(UnitUtils.ConvertFromInternalUnits(temperature, UnitTypeId.Kelvin));
-            }
-
-            tr.Commit();
+                foreach (var curElement in copiedElements)
+                {
+                    var parameter = curElement.get_Parameter(BuiltInParameter.RBS_CURVE_SURFACE_AREA);
+                    if (parameter is not {StorageType: StorageType.Double}) continue;
+                    var value = parameter.AsDouble();
+                    var length = UnitUtils.ConvertFromInternalUnits(value, UnitTypeId.SquareMeters) * reserve;
+                    GetParameter(curElement, parameterName)?.Set(length);
+                }
+            });
         }
 
-        public static void CopyAdskName(Document doc, IEnumerable<Element> copiedElements, string copiedData)
+        public static void CopyVolumeValue(Document doc, string parameterName, double reserve, IEnumerable<Element> copiedElements)
         {
-            using var tr = new Transaction(doc, "Заполнение значений ADSK_Наименование");
-            tr.Start();
-            foreach (var curElement in copiedElements)
+            TransactionManager.CreateTransaction(doc, "Заполнение объема в кубических метрах", () =>
             {
-                var parameter = curElement.get_Parameter(SpfGuids.AdskName);
-                if (parameter == null) continue;
-                if (parameter.IsReadOnly) continue;
-                parameter.Set(copiedData);
-            }
-
-            tr.Commit();
+                foreach (var curElement in copiedElements)
+                {
+                    var parameter = curElement.get_Parameter(BuiltInParameter.RBS_INSULATION_LINING_VOLUME);
+                    if (parameter is not {StorageType: StorageType.Double}) continue;
+                    var value = parameter.AsDouble();
+                    var length = UnitUtils.ConvertFromInternalUnits(value, UnitTypeId.CubicMeters) * reserve;
+                    GetParameter(curElement, parameterName)?.Set(length);
+                }
+            });
         }
 
-        public static void CopyCommentValue(Document doc, IEnumerable<Element> copiedElements, string copiedData)
+        public static void CopyMassValue(Document doc, string parameterName, double value, IEnumerable<Element> copiedElements)
         {
-            using var tr = new Transaction(doc, "Заполнение значений ADSK_Примечание");
-            tr.Start();
-            foreach (var curElement in copiedElements) curElement.get_Parameter(SpfGuids.AdskNote)?.Set(copiedData);
-            tr.Commit();
-        }
-
-        public static void CopyMass(Document doc, IEnumerable<Element> copiedElements, string copiedData)
-        {
-            using var tr = new Transaction(doc, "Заполнение значений ADSK_Масса элемента");
-            tr.Start();
-            foreach (var curElement in copiedElements)
+            TransactionManager.CreateTransaction(doc, "Заполнение массы в килограммах", () =>
             {
-                var massParam = curElement.get_Parameter(SpfGuids.AdskMassDimension);
-                if (double.TryParse(copiedData.Replace(',', '.'), out var value)) massParam?.Set(UnitUtils.ConvertToInternalUnits(value, UnitTypeId.Kilograms));
-            }
-
-            tr.Commit();
+                foreach (var curElement in copiedElements)
+                {
+                    var length = UnitUtils.ConvertFromInternalUnits(value, UnitTypeId.Kilograms);
+                    GetParameter(curElement, parameterName)?.Set(length);
+                }
+            });
         }
 
-        public static void CopyVolumeValue(Document doc, IEnumerable<Element> copiedElements, double reserveLength = 1, string reserveParameter = "")
+        public static void CopyTemperatureValue(Document doc, string parameterName, IEnumerable<Element> copiedElements)
         {
-            using var tr = new Transaction(doc, "Заполнение значений ADSK_Количество");
-            tr.Start();
-            foreach (var curElement in copiedElements)
-                SetBuiltinParameterValue(doc, curElement, BuiltInParameter.RBS_INSULATION_LINING_VOLUME, UnitTypeId.CubicMeters, reserveLength, reserveParameter);
-            tr.Commit();
+            TransactionManager.CreateTransaction(doc, "Заполнение температуры трубы в Кельвинах", () =>
+            {
+                foreach (var curElement in copiedElements)
+                {
+                    var pipe = curElement as Pipe;
+                    if (null == pipe) continue;
+                    var systemType = doc.GetElement(pipe.MEPSystem.GetTypeId()) as PipingSystemType;
+                    if (systemType == null) continue;
+                    var temperature = UnitUtils.ConvertFromInternalUnits(systemType.FluidTemperature, UnitTypeId.Kelvin);
+                    GetParameter(curElement, parameterName)?.Set(temperature);
+                }
+            });
         }
 
-        public static void CopyAreaValue(Document doc, IEnumerable<Element> copiedElements, double reserveLength = 1, string reserveParameter = "")
-        {
-            using var tr = new Transaction(doc, "Заполнение значений ADSK_Количество");
-            tr.Start();
-            foreach (var curElement in copiedElements) SetBuiltinParameterValue(doc, curElement, BuiltInParameter.RBS_CURVE_SURFACE_AREA, UnitTypeId.SquareMeters, reserveLength, reserveParameter);
-            tr.Commit();
-        }
-        public static GlobalParameter GetGlobalParameter(Document doc, string name)
+        private static GlobalParameter GetGlobalParameter(Document doc, string name)
         {
             return new FilteredElementCollector(doc)
-                        .OfClass(typeof(GlobalParameter))
-                        .Cast<GlobalParameter>()
-                        .FirstOrDefault(gp => gp.Name.Equals(name));
-            
+                   .OfClass(typeof(GlobalParameter))
+                   .Cast<GlobalParameter>()
+                   .FirstOrDefault(gp => gp.Name.Equals(name));
         }
+
         public static bool TryGetGlobalReserveValue(Document doc, string name, out double value)
         {
             value = default;
@@ -178,6 +161,7 @@ namespace AdskTemplateMepTools.RevitAPI
             value = doubleParameterValue.Value;
             return true;
         }
+
         public static bool TryGetGlobalReserveValue(Document doc, string name, out int value)
         {
             value = default;
@@ -185,15 +169,6 @@ namespace AdskTemplateMepTools.RevitAPI
             if (reserveValue?.GetValue() is not IntegerParameterValue integerParameterValue) return false;
             value = integerParameterValue.Value;
             return true;
-        }
-
-
-        public static void SetBuiltinParameterValue(Document doc, Element curElement, BuiltInParameter parameter, ForgeTypeId unitType, double reserveLength, string reserveParameter)
-        {
-            var len = curElement.get_Parameter(parameter).AsDouble();
-            if (!TryGetGlobalReserveValue(doc, reserveParameter, out double reserve)) reserve = reserveLength;
-            len = UnitUtils.ConvertFromInternalUnits(len, unitType) * reserve;
-            curElement.get_Parameter(SpfGuids.AdskQuantity)?.Set(len);
         }
 
         public static List<Element> GetElementsOnRow(Document doc, ViewSchedule vs, int rowNumber)

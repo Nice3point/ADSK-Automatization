@@ -3,9 +3,9 @@ using Newtonsoft.Json;
 
 namespace AdskTemplateMepTools.Commands.CopyADSK.Operations
 {
-    public class CopyLengthOperation : IOperation
+    public class CopyAreaOperation : IOperation
     {
-       public CopyLengthOperation(string parameter, string reserveParameter)
+       public CopyAreaOperation(string parameter, string reserveParameter)
         {
             Parameter = parameter;
             ReserveParameter = reserveParameter;
@@ -13,14 +13,14 @@ namespace AdskTemplateMepTools.Commands.CopyADSK.Operations
         }
 
         [JsonConstructor]
-        public CopyLengthOperation(string parameter, double reserve, string reserveParameter)
+        public CopyAreaOperation(string parameter, double reserve, string reserveParameter)
         {
             Parameter = parameter;
             Reserve = reserve;
             ReserveParameter = reserveParameter;
         }
 
-        public Operation Name => Operation.CopyLength;
+        public Operation Name => Operation.CopyArea;
         
         [JsonProperty("Название параметра")] public string Parameter { get; }
         

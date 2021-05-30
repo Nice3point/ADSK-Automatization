@@ -1,7 +1,7 @@
 using System;
 using Autodesk.Revit.DB;
 
-namespace AdskTemplateMepTools.RevitAPI
+namespace AdskTemplateMepTools.RevitUtils
 {
     public static class TransactionManager
     {

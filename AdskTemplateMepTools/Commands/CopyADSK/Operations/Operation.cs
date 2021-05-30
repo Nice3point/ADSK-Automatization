@@ -9,11 +9,10 @@ namespace AdskTemplateMepTools.Commands.CopyADSK.Operations
     {
         [EnumMember(Value = "Копирование текста")] CopyString,
         [EnumMember(Value = "Копирование целого")] CopyInteger,
-        [EnumMember(Value = "Копирование дробного")] CopyDouble,
-        [EnumMember(Value = "Копирование длины в метрах")] CopyLength,
-        [EnumMember(Value = "Копирование квадратных метров")] CopyArea,
-        [EnumMember(Value = "Копирование кубических метров")] CopyVolume,
-        [EnumMember(Value = "Копирование температуры в Кельвинах")] CopyTemperature,
-        [EnumMember(Value = "Копирование массы в килограммах")] CopyMass
+        [EnumMember(Value = "Копирование длины")] CopyLength,
+        [EnumMember(Value = "Копирование площади")] CopyArea,
+        [EnumMember(Value = "Копирование объема")] CopyVolume,
+        [EnumMember(Value = "Копирование температуры системы")] CopyTemperature,
+        [EnumMember(Value = "Копирование массы")] CopyMass
     }
 }

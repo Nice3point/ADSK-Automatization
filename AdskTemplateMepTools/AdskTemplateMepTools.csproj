@@ -109,10 +109,13 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="Commands\CopyADSK\CommandJsonConverter.cs" />
-        <Compile Include="Commands\CopyADSK\Operations.cs" />
+        <Compile Include="Commands\CopyADSK\Operations\CopyAreaOperation.cs" />
         <Compile Include="Commands\CopyADSK\Operations\CopyIntegerOperation.cs" />
         <Compile Include="Commands\CopyADSK\Operations\CopyLengthOperation.cs" />
+        <Compile Include="Commands\CopyADSK\Operations\CopyMassOperation.cs" />
         <Compile Include="Commands\CopyADSK\Operations\CopyStringOperation.cs" />
+        <Compile Include="Commands\CopyADSK\Operations\CopyTemperatureOperation.cs" />
+        <Compile Include="Commands\CopyADSK\Operations\CopyVolumeOperation.cs" />
         <Compile Include="Commands\CopyADSK\Operations\IOperation.cs" />
         <Compile Include="Commands\CopyADSK\Operations\Operation.cs" />
         <Compile Include="Resources\Localization\Application.Designer.cs">
@@ -143,8 +146,8 @@
         <Compile Include="Commands\CopyADSK\ViewModel\CopyADSKSettingsViewModel.cs" />
         <Compile Include="Configuration.cs" />
         <Compile Include="Installer.cs" />
-        <Compile Include="RevitAPI\RevitFunctions.cs" />
-        <Compile Include="RevitAPI\TransactionManager.cs" />
+        <Compile Include="RevitUtils\RevitFunctions.cs" />
+        <Compile Include="RevitUtils\TransactionManager.cs" />
         <Compile Include="Styles\SettingsStyleDictionary.cs" />
         <Compile Include="Properties\Annotations.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />

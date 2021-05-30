@@ -34,13 +34,13 @@ namespace AdskTemplateMepTools.Commands.CopyADSK.Operations
         
         [JsonProperty("Название параметра")] public string Parameter { get; }
         [JsonProperty("Исходный столбец")] public int SourceColumn { get; }
-        [JsonProperty("Целое значение")] public int IntegerValue { get; }
+        [JsonProperty("Значение")] public int IntegerValue { get; }
         
-        [JsonProperty("Множитель")] 
+        [JsonProperty("Коэффициент запаса")] 
         [DefaultValue(1)]
         public int Reserve { get; }
         
-        [JsonProperty("Глобальный параметр множителя")]
+        [JsonProperty("Глобальный параметр коэффициента запаса")]
         [DefaultValue("")]
         public string ReserveParameter { get; }
     }

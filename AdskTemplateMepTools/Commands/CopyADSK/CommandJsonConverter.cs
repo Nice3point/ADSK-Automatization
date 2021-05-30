@@ -25,12 +25,12 @@ namespace AdskTemplateMepTools.Commands.CopyADSK
             foreach (var jToken in jsonArray)
             {
                 if (jToken is not JObject jObject) continue;
-                if (!TryGetValueByJsonProperty(typeof(IOperation), nameof(IOperation.Name),out var iOperationName)) continue;
+                if (!TryGetJsonPropertyValue(typeof(IOperation), nameof(IOperation.Name),out var iOperationName)) continue;
                 if (!jObject.ContainsKey(iOperationName)) continue;
                 if (!jObject.TryGetValue(iOperationName, out var nameToken)) continue;
                 var nameValue = nameToken.Value<string>();
                 if (nameValue == null) continue;
-                if (!TryGetEnumByEnumMember<Operation>(nameValue, out var command))
+                if (!TryGetEnumMemberValue<Operation>(nameValue, out var command))
                     if (!Enum.TryParse(nameValue, out command))
                         continue;
 
@@ -38,7 +38,6 @@ namespace AdskTemplateMepTools.Commands.CopyADSK
                 {
                     Operation.CopyString => jToken.ToObject<CopyStringOperation>(),
                     Operation.CopyInteger => jToken.ToObject<CopyIntegerOperation>(),
-                    Operation.CopyDouble => jToken.ToObject<CopyDoubleOperation>(),
                     Operation.CopyLength => jToken.ToObject<CopyLengthOperation>(),
                     Operation.CopyArea => jToken.ToObject<CopyAreaOperation>(),
                     Operation.CopyVolume => jToken.ToObject<CopyVolumeOperation>(),
@@ -60,7 +59,7 @@ namespace AdskTemplateMepTools.Commands.CopyADSK
             return true;
         }
 
-        private static bool TryGetEnumByEnumMember<T>(string value, out T @enum) where T : Enum
+        private static bool TryGetEnumMemberValue<T>(string value, out T @enum) where T : Enum
         {
             foreach (var field in typeof(T).GetFields())
             {
@@ -73,7 +72,7 @@ namespace AdskTemplateMepTools.Commands.CopyADSK
             @enum = default;
             return false;
         }
-        private static bool TryGetValueByJsonProperty(Type type, string field, out string propertyName)
+        private static bool TryGetJsonPropertyValue(Type type, string field, out string propertyName)
         {
             var property = TypeDescriptor.GetProperties(type)[field];
             foreach (var attribute in property.Attributes)

@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using AdskTemplateMepTools.Commands.CopyADSK.Operations;
 using AdskTemplateMepTools.Commands.CopyADSK.ViewModel;
-using AdskTemplateMepTools.RevitAPI;
+using AdskTemplateMepTools.RevitUtils;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
@@ -50,11 +49,11 @@ namespace AdskTemplateMepTools.Commands.CopyADSK.Commands
             }
         }
 
-        private static void CopyToAdsk(ViewSchedule vs, ObservableCollection<IOperation> operations)
+        private static void CopyToAdsk(ViewSchedule vs, IReadOnlyCollection<IOperation> operations)
         {
             var tData = vs.GetTableData();
             var tsDada = tData.GetSectionData(SectionType.Body);
-            if(operations.Count == 0) return;
+            if (operations.Count == 0) return;
             TransactionManager.CreateTransactionGroup(_doc, "Копирование параметров", () =>
             {
                 for (var rInd = 0; rInd < tsDada.NumberOfRows; rInd++)
@@ -70,18 +69,20 @@ namespace AdskTemplateMepTools.Commands.CopyADSK.Commands
                             case Operation.CopyInteger:
                                 if (operation is CopyIntegerOperation integerOperation) CopyIntegerValues(integerOperation, tsDada, rInd, elements);
                                 break;
-                            case Operation.CopyDouble:
-                                break;
                             case Operation.CopyLength:
                                 if (operation is CopyLengthOperation lengthOperation) CopyLengthValues(lengthOperation, elements);
                                 break;
                             case Operation.CopyArea:
+                                if (operation is CopyAreaOperation areaOperation) CopyAreaValues(areaOperation, elements);
                                 break;
                             case Operation.CopyVolume:
-                                break;
-                            case Operation.CopyTemperature:
+                                if (operation is CopyVolumeOperation volumeOperation) CopyVolumeValues(volumeOperation, elements);
                                 break;
                             case Operation.CopyMass:
+                                if (operation is CopyMassOperation massOperation) CopyMassValues(massOperation, tsDada, rInd, elements);
+                                break;
+                            case Operation.CopyTemperature:
+                                if (operation is CopyTemperatureOperation temperatureOperation) CopyTemperatureValues(temperatureOperation, elements);
                                 break;
                             default:
                                 throw new ArgumentOutOfRangeException();
@@ -96,15 +97,13 @@ namespace AdskTemplateMepTools.Commands.CopyADSK.Commands
             var column = operation.SourceColumn - 1;
             if (column >= 0)
             {
-                if (column < tsDada.NumberOfColumns)
-                {
-                    value = tsDada.GetCellText(row, column);
-                }
+                if (column < tsDada.NumberOfColumns) value = tsDada.GetCellText(row, column);
             }
             else
             {
                 value = operation.Value;
             }
+
             RevitFunctions.CopyStringValue(_doc, operation.Parameter, value, elements);
         }
 
@@ -137,6 +136,7 @@ namespace AdskTemplateMepTools.Commands.CopyADSK.Commands
 
             RevitFunctions.CopyIntegerValue(_doc, operation.Parameter, value * reserve, elements);
         }
+
         private static void CopyLengthValues(CopyLengthOperation operation, IEnumerable<Element> elements)
         {
             var reserve = 1d;
@@ -152,5 +152,63 @@ namespace AdskTemplateMepTools.Commands.CopyADSK.Commands
             RevitFunctions.CopyLengthValue(_doc, operation.Parameter, reserve, elements);
         }
 
+        private static void CopyAreaValues(CopyAreaOperation operation, IEnumerable<Element> elements)
+        {
+            var reserve = 1d;
+            if (!string.IsNullOrEmpty(operation.ReserveParameter))
+            {
+                if (RevitFunctions.TryGetGlobalReserveValue(_doc, operation.ReserveParameter, out double outValue)) reserve = outValue;
+            }
+            else
+            {
+                reserve = operation.Reserve;
+            }
+
+            RevitFunctions.CopyAreaValue(_doc, operation.Parameter, reserve, elements);
+        }
+
+        private static void CopyVolumeValues(CopyVolumeOperation operation, IEnumerable<Element> elements)
+        {
+            var reserve = 1d;
+            if (!string.IsNullOrEmpty(operation.ReserveParameter))
+            {
+                if (RevitFunctions.TryGetGlobalReserveValue(_doc, operation.ReserveParameter, out double outValue)) reserve = outValue;
+            }
+            else
+            {
+                reserve = operation.Reserve;
+            }
+
+            RevitFunctions.CopyVolumeValue(_doc, operation.Parameter, reserve, elements);
+        }
+
+        private static void CopyMassValues(CopyMassOperation operation, TableSectionData tsDada, int row, IEnumerable<Element> elements)
+        {
+            var reserve = 1d;
+            if (!string.IsNullOrEmpty(operation.ReserveParameter))
+            {
+                if (RevitFunctions.TryGetGlobalReserveValue(_doc, operation.ReserveParameter, out double outValue)) reserve = outValue;
+            }
+            else
+            {
+                reserve = operation.Reserve;
+            }
+
+            var value = 0;
+            var column = operation.SourceColumn - 1;
+            if (column >= 0)
+                if (column < tsDada.NumberOfColumns)
+                {
+                    var data = tsDada.GetCellText(row, column);
+                    if (int.TryParse(data.Replace(',', '.'), out var outValue)) value = outValue;
+                }
+
+            RevitFunctions.CopyMassValue(_doc, operation.Parameter, value * reserve, elements);
+        }
+
+        private static void CopyTemperatureValues(CopyTemperatureOperation operation, IEnumerable<Element> elements)
+        {
+            RevitFunctions.CopyTemperatureValue(_doc, operation.Parameter, elements);
+        }
     }
 }

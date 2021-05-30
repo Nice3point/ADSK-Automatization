@@ -3,29 +3,32 @@ using Newtonsoft.Json;
 
 namespace AdskTemplateMepTools.Commands.CopyADSK.Operations
 {
-    public class CopyLengthOperation : IOperation
+    public class CopyMassOperation : IOperation
     {
-       public CopyLengthOperation(string parameter, string reserveParameter)
+        public CopyMassOperation(string parameter, int sourceColumn)
         {
             Parameter = parameter;
-            ReserveParameter = reserveParameter;
+            SourceColumn = sourceColumn;
             Reserve = 1;
         }
 
         [JsonConstructor]
-        public CopyLengthOperation(string parameter, double reserve, string reserveParameter)
+        public CopyMassOperation(string parameter, double reserve, string reserveParameter)
         {
             Parameter = parameter;
             Reserve = reserve;
             ReserveParameter = reserveParameter;
         }
 
-        public Operation Name => Operation.CopyLength;
+        public Operation Name => Operation.CopyMass;
         
         [JsonProperty("Название параметра")] public string Parameter { get; }
         
+        [JsonProperty("Исходный столбец")]
+        public int SourceColumn { get; }
+        
         [JsonProperty("Коэффициент запаса")]
-        [DefaultValue(1d)]
+        [DefaultValue(1.0)]
         public double Reserve { get; }
         
         [JsonProperty("Глобальный параметр коэффициента запаса")]
