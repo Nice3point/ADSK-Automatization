@@ -18,16 +18,16 @@ namespace AdskTemplateMepTools.Commands
 
     public static class SpfParameter
     {
-        public const string AdskPosition = "ADSK_Позиция";
-        public const string AdskName = "ADSK_Наименование";
-        public const string AdskType = "ADSK_Марка";
-        public const string AdskCode = "ADSK_Код изделия";
-        public const string AdskManufacturer = "ADSK_Завод-изготовитель";
-        public const string AdskUnit = "ADSK_Единица измерения";
-        public const string AdskQuantity = "ADSK_Количество";
-        public const string AdskMass = "ADSK_Масса";
-        public const string AdskMassDimension = "ADSK_Масса элемента";
-        public const string AdskNote = "ADSK_Примечание";
+        public const string Position = "ADSK_Позиция";
+        public const string Name = "ADSK_Наименование";
+        public const string Type = "ADSK_Марка";
+        public const string ProductCode = "ADSK_Код изделия";
+        public const string Manufacturer = "ADSK_Завод-изготовитель";
+        public const string Unit = "ADSK_Единица измерения";
+        public const string Quantity = "ADSK_Количество";
+        public const string Mass = "ADSK_Масса";
+        public const string MassWithDimension = "ADSK_Масса элемента";
+        public const string Note = "ADSK_Примечание";
     }
     public static class ProjectGlobalParameter
     {
