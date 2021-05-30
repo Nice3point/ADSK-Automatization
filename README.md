@@ -1,4 +1,4 @@
-<h3 align="center"><img src="https://i.imgur.com/mLrwrRs.png" width="500px"></h3>
+<h3 align="center"><img src="https://user-images.githubusercontent.com/20504884/120114759-56732880-c189-11eb-965b-0624022d6efb.png" width="500px"></h3>
 <p align="center">
   <a href="https://github.com/Nice3point/ADSK-Automatization/releases/latest"><img src="https://img.shields.io/github/release/Nice3point/ADSK-Automatization"></a>
   <a href="https://github.com/Nice3point/ADSK-Automatization/issues"><img src="https://img.shields.io/github/issues/Nice3point/ADSK-Automatization"></a>
