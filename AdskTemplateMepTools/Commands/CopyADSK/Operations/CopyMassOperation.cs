@@ -28,7 +28,7 @@ namespace AdskTemplateMepTools.Commands.CopyADSK.Operations
         public int SourceColumn { get; }
         
         [JsonProperty("Коэффициент запаса")]
-        [DefaultValue(1.0)]
+        [DefaultValue(1d)]
         public double Reserve { get; }
         
         [JsonProperty("Глобальный параметр коэффициента запаса")]

@@ -21,6 +21,7 @@ namespace AdskTemplateMepTools.Commands.CopyADSK.ViewModel
         private RelayCommand _loadSchedules;
         private RelayCommand _saveSchedules;
         private string _schedulesPath;
+        private Schedule _selectedSchedules;
 
         public CopyAdskSettingsViewModel(CopyAdskSettings model)
         {
@@ -41,6 +42,16 @@ namespace AdskTemplateMepTools.Commands.CopyADSK.ViewModel
         }
 
         public ObservableCollection<Schedule> Schedules { get; }
+
+        public Schedule SelectedSchedules
+        {
+            get => _selectedSchedules;
+            set
+            {
+                _selectedSchedules = value;
+                OnPropertyChanged(nameof(SelectedSchedules));
+            }
+        }
 
         public string SchedulesConfigPath
         {

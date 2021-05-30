@@ -5,6 +5,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:viewModel="clr-namespace:AdskTemplateMepTools.Commands.CopyADSK.ViewModel"
+    xmlns:converters="clr-namespace:AdskTemplateMepTools.Commands.CopyADSK.ViewModel.Converters"
     d:DataContext="{d:DesignInstance viewModel:CopyAdskSettingsViewModel }"
     mc:Ignorable="d"
     WindowStartupLocation="CenterScreen"
@@ -13,13 +14,13 @@
     MinHeight="300"
     MinWidth="500"
     Height="400"
-    Width="500"
+    Width="650"
     Style="{DynamicResource SettingsWindowStyle}">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary
-                    Source="../../../Styles/SettingsStyleDictionary.xaml" />
+                    Source="../../../Styles/WindowStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
@@ -64,7 +65,15 @@
             Height="24">
             <TextBlock
                 Margin="3,0,0,0">
-                @Nice3point
+                <Hyperlink
+                    NavigateUri="https://t.me/revitmepru"
+                    RequestNavigate="Hyperlink_OnRequestNavigate"
+                    Foreground="Black"
+                    TextDecorations="None">
+                    <Run
+                        Text="@Nice3point"
+                        Foreground="White"/>
+                </Hyperlink>
             </TextBlock>
             <StatusBarItem
                 HorizontalAlignment="Right">
@@ -74,7 +83,8 @@
         </StatusBar>
         <Separator
             DockPanel.Dock="Top"
-            Background="Black" />
+            Background="Black"
+            Margin="0" />
         <Grid
             Height="30"
             Width="100"
@@ -102,13 +112,43 @@
         </Grid>
         <Separator
             DockPanel.Dock="Bottom"
-            Background="Black" />
-        <ListBox
-            x:Name="ListBoxSpecificationNames"
-            BorderBrush="White"
-            SelectionMode="Extended"
-            ItemContainerStyle="{StaticResource ListBoxItemStyle}"
-            ItemsSource="{Binding Schedules, UpdateSourceTrigger=PropertyChanged}"
-            DisplayMemberPath="Name" />
+            Background="Black"
+            Margin="0" />
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition
+                    Width="*"
+                    MinWidth="200"/>
+                <ColumnDefinition
+                    Width="1" />
+                <ColumnDefinition
+                    Width="*"
+                    MinWidth="200"/>
+            </Grid.ColumnDefinitions>
+            <ListBox
+                Grid.Column="0"
+                x:Name="ListBoxSpecificationNames"
+                BorderBrush="White"
+                SelectionMode="Extended"
+                ItemsSource="{Binding Schedules, UpdateSourceTrigger=PropertyChanged}"
+                SelectedItem="{Binding SelectedSchedules, Mode=OneWayToSource}"
+                DisplayMemberPath="Name"/>
+            <GridSplitter
+                Grid.Column="1"
+                Width="1"
+                HorizontalAlignment="Center"
+                Background="Black" />
+            <ListBox
+                Grid.Column="2"
+                BorderBrush="White"
+                SelectionMode="Extended"
+                ItemsSource="{Binding SelectedSchedules.Operations, Mode = OneWay, UpdateSourceTrigger=PropertyChanged}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Name, Converter={converters:EnumValueConverter}}"/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
     </DockPanel>
 </Window>

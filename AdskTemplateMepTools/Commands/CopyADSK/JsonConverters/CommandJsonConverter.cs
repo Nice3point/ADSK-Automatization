@@ -1,12 +1,11 @@
 using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.Serialization;
 using AdskTemplateMepTools.Commands.CopyADSK.Operations;
+using AdskTemplateMepTools.Utils;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace AdskTemplateMepTools.Commands.CopyADSK
+namespace AdskTemplateMepTools.Commands.CopyADSK.JsonConverters
 {
     public class CommandJsonConverter : JsonConverter
     {
@@ -25,12 +24,12 @@ namespace AdskTemplateMepTools.Commands.CopyADSK
             foreach (var jToken in jsonArray)
             {
                 if (jToken is not JObject jObject) continue;
-                if (!TryGetJsonPropertyValue(typeof(IOperation), nameof(IOperation.Name),out var iOperationName)) continue;
+                if (!AttributeUtils.TryGetJsonPropertyValue(typeof(IOperation), nameof(IOperation.Name),out var iOperationName)) continue;
                 if (!jObject.ContainsKey(iOperationName)) continue;
                 if (!jObject.TryGetValue(iOperationName, out var nameToken)) continue;
                 var nameValue = nameToken.Value<string>();
                 if (nameValue == null) continue;
-                if (!TryGetEnumMemberValue<Operation>(nameValue, out var command))
+                if (!AttributeUtils.TryGetEnumMemberField<Operation>(nameValue, out var command))
                     if (!Enum.TryParse(nameValue, out command))
                         continue;
 
@@ -57,33 +56,6 @@ namespace AdskTemplateMepTools.Commands.CopyADSK
         public override bool CanConvert(Type objectType)
         {
             return true;
-        }
-
-        private static bool TryGetEnumMemberValue<T>(string value, out T @enum) where T : Enum
-        {
-            foreach (var field in typeof(T).GetFields())
-            {
-                if (Attribute.GetCustomAttribute(field, typeof(EnumMemberAttribute)) is not EnumMemberAttribute attribute) continue;
-                if (attribute.Value != value) continue;
-                @enum = (T) field.GetValue(null);
-                return true;
-            }
-
-            @enum = default;
-            return false;
-        }
-        private static bool TryGetJsonPropertyValue(Type type, string field, out string propertyName)
-        {
-            var property = TypeDescriptor.GetProperties(type)[field];
-            foreach (var attribute in property.Attributes)
-            {
-                if (attribute is not JsonPropertyAttribute jsonProperty) continue;
-                propertyName = jsonProperty.PropertyName;
-                return true;
-            }
-
-            propertyName = default;
-            return false;
         }
     }
 }

@@ -20,12 +20,12 @@ namespace AdskTemplateMepTools
             {
                 Name = "Revit ADSK MEP PlugIn",
                 OutFileName = "AdskMepTools" + RevitVersion,
-                Version = new Version(1, 0, int.Parse(RevitVersion)),
+                Version = new Version(1, 4, int.Parse(RevitVersion)),
                 Platform = Platform.x64,
                 UI = WUI.WixUI_InstallDir,
                 InstallScope = InstallScope.perUser,
                 BackgroundImage = $@"{Directory.GetParent(Directory.GetCurrentDirectory())}/Resources/Icons/Installer/BackgroundImage.png",
-                GUID = new Guid("71BB7C79-88F5-4A03-B4DA-E3953800471C"),
+                GUID = new Guid("577796C3-A5D7-49F1-8985-85D129DA091C"),
                 Dirs = new[]
                 {
                     new Dir($"{InstallationDir}",

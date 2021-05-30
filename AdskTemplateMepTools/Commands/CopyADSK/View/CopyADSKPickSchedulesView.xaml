@@ -19,7 +19,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary
-                    Source="../../../Styles/SettingsStyleDictionary.xaml" />
+                    Source="../../../Styles/WindowStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
@@ -54,8 +54,7 @@
             Background="Black" />
         <ListBox
             BorderBrush="White"
-            SelectionMode="Extended"
-            ItemContainerStyle="{StaticResource ListBoxItemStyle}"
+            SelectionMode="Extended"           
             SelectionChanged="SpecificationPicker_OnSelectionChanged"
             ItemsSource="{Binding ProjectUnusedSpecification, UpdateSourceTrigger=PropertyChanged}" />
     </DockPanel>
