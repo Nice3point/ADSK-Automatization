@@ -3,4 +3,8 @@
 .vs/
 obj/
 bin/
+/output/
+*.Designer.cs
+build.schema.json
+*/temp/
 ADSK-Automatization.sln.*

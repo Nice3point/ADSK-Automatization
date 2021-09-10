@@ -123,6 +123,7 @@ partial class Build : NukeBuild
     void RestoreProject(string configuration) =>
         MSBuild(s => s
             .SetTargetPath(Solution)
+            .SetVerbosity(MSBuildVerbosity.Minimal)
             .SetTargets("Restore")
             .SetConfiguration(configuration)
         );
@@ -131,6 +132,7 @@ partial class Build : NukeBuild
         MSBuild(s => s
             .SetTargetPath(Solution)
             .SetTargets("Rebuild")
+            .SetVerbosity(MSBuildVerbosity.Minimal)
             .SetConfiguration(configuration)
             .SetMSBuildPlatform(MSBuildPlatform.x64)
             .SetMaxCpuCount(Environment.ProcessorCount)
