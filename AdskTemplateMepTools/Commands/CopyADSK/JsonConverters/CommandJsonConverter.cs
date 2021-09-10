@@ -5,6 +5,8 @@ using AdskTemplateMepTools.Utils;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
+#pragma warning disable 8632
+
 namespace AdskTemplateMepTools.Commands.CopyADSK.JsonConverters
 {
     public class CommandJsonConverter : JsonConverter

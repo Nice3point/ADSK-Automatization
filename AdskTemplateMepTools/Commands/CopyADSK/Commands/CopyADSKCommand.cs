@@ -194,14 +194,16 @@ namespace AdskTemplateMepTools.Commands.CopyADSK.Commands
                 reserve = operation.Reserve;
             }
 
-            var value = 0;
+            var value = 0d;
             var column = operation.SourceColumn - 1;
             if (column >= 0)
+            {
                 if (column < tsDada.NumberOfColumns)
                 {
                     var data = tsDada.GetCellText(row, column);
-                    if (int.TryParse(data.Replace(',', '.'), out var outValue)) value = outValue;
+                    if (double.TryParse(data.Replace(',', '.'), out var outValue)) value = outValue;
                 }
+            }
 
             RevitFunctions.CopyMassValue(_doc, operation.Parameter, value * reserve, elements);
         }

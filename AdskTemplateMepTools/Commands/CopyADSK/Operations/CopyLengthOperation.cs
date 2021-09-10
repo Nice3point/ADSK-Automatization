@@ -15,8 +15,8 @@ namespace AdskTemplateMepTools.Commands.CopyADSK.Operations
         [JsonConstructor]
         public CopyLengthOperation(string parameter, double reserve, string reserveParameter)
         {
-            Parameter = parameter;
-            Reserve = reserve;
+            Parameter        = parameter;
+            Reserve          = reserve == 0 ? 1 : reserve;
             ReserveParameter = reserveParameter;
         }
 

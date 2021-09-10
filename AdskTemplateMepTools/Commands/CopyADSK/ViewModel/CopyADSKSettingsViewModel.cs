@@ -5,10 +5,10 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using AdskTemplateMepTools.Annotations;
 using AdskTemplateMepTools.Commands.CopyADSK.Commands;
 using AdskTemplateMepTools.Commands.CopyADSK.View;
 using AdskTemplateMepTools.Resources.Localization;
+using JetBrains.Annotations;
 using Microsoft.Win32;
 
 namespace AdskTemplateMepTools.Commands.CopyADSK.ViewModel

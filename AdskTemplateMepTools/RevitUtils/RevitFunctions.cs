@@ -79,7 +79,7 @@ namespace AdskTemplateMepTools.RevitUtils
                 foreach (var curElement in copiedElements)
                 {
                     var parameter = curElement.get_Parameter(BuiltInParameter.CURVE_ELEM_LENGTH);
-                    if (parameter is not {StorageType: StorageType.Double}) continue;
+                    if (parameter is not { StorageType: StorageType.Double }) continue;
                     var value = parameter.AsDouble();
                     var length = UnitUtils.ConvertFromInternalUnits(value, UnitTypeId.Meters) * reserve;
                     GetParameter(curElement, parameterName)?.Set(length);
@@ -94,7 +94,7 @@ namespace AdskTemplateMepTools.RevitUtils
                 foreach (var curElement in copiedElements)
                 {
                     var parameter = curElement.get_Parameter(BuiltInParameter.RBS_CURVE_SURFACE_AREA);
-                    if (parameter is not {StorageType: StorageType.Double}) continue;
+                    if (parameter is not { StorageType: StorageType.Double }) continue;
                     var value = parameter.AsDouble();
                     var length = UnitUtils.ConvertFromInternalUnits(value, UnitTypeId.SquareMeters) * reserve;
                     GetParameter(curElement, parameterName)?.Set(length);
@@ -109,7 +109,7 @@ namespace AdskTemplateMepTools.RevitUtils
                 foreach (var curElement in copiedElements)
                 {
                     var parameter = curElement.get_Parameter(BuiltInParameter.RBS_INSULATION_LINING_VOLUME);
-                    if (parameter is not {StorageType: StorageType.Double}) continue;
+                    if (parameter is not { StorageType: StorageType.Double }) continue;
                     var value = parameter.AsDouble();
                     var length = UnitUtils.ConvertFromInternalUnits(value, UnitTypeId.CubicMeters) * reserve;
                     GetParameter(curElement, parameterName)?.Set(length);
@@ -123,8 +123,8 @@ namespace AdskTemplateMepTools.RevitUtils
             {
                 foreach (var curElement in copiedElements)
                 {
-                    var length = UnitUtils.ConvertFromInternalUnits(value, UnitTypeId.Kilograms);
-                    GetParameter(curElement, parameterName)?.Set(length);
+                    var mass = UnitUtils.ConvertFromInternalUnits(value, UnitTypeId.Kilograms);
+                    GetParameter(curElement, parameterName)?.Set(mass);
                 }
             });
         }
@@ -148,9 +148,9 @@ namespace AdskTemplateMepTools.RevitUtils
         private static GlobalParameter GetGlobalParameter(Document doc, string name)
         {
             return new FilteredElementCollector(doc)
-                   .OfClass(typeof(GlobalParameter))
-                   .Cast<GlobalParameter>()
-                   .FirstOrDefault(gp => gp.Name.Equals(name));
+                .OfClass(typeof(GlobalParameter))
+                .Cast<GlobalParameter>()
+                .FirstOrDefault(gp => gp.Name.Equals(name));
         }
 
         public static bool TryGetGlobalReserveValue(Document doc, string name, out double value)
@@ -176,8 +176,8 @@ namespace AdskTemplateMepTools.RevitUtils
             var tableData = vs.GetTableData();
             var tableSectionData = tableData.GetSectionData(SectionType.Body);
             var elemIds = new FilteredElementCollector(doc, vs.Id)
-                          .ToElementIds()
-                          .ToList();
+                .ToElementIds()
+                .ToList();
 
             using var t = new Transaction(doc, "Получение элементов таблицы");
             t.Start();
@@ -197,14 +197,14 @@ namespace AdskTemplateMepTools.RevitUtils
             }
 
             var remainingElementsIds = new FilteredElementCollector(doc, vs.Id)
-                                       .ToElementIds()
-                                       .ToList();
+                .ToElementIds()
+                .ToList();
             t.RollBack();
 
             return elemIds
-                   .Where(id => !remainingElementsIds.Contains(id))
-                   .Select(doc.GetElement)
-                   .ToList();
+                .Where(id => !remainingElementsIds.Contains(id))
+                .Select(doc.GetElement)
+                .ToList();
         }
     }
 }

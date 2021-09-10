@@ -39,7 +39,11 @@ namespace AdskTemplateMepTools.Commands.CopyADSK.Commands
         public static ObservableCollection<Schedule> LoadSchedules(string path)
         {
             var json = File.ReadAllText(path);
-            return JsonConvert.DeserializeObject<ObservableCollection<Schedule>>(json);
+            var serializerSettings = new JsonSerializerSettings
+            {
+                DefaultValueHandling = DefaultValueHandling.Populate
+            };
+            return JsonConvert.DeserializeObject<ObservableCollection<Schedule>>(json, serializerSettings);
         }
 
         public static void SaveSchedules(string path, ObservableCollection<Schedule> schedules)
